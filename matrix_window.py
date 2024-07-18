@@ -37,10 +37,10 @@ class Matrix_Window:
 
         # login data
 
-        self.user_name = tk.Label(self.panel, text="Logged In As [Guest]", bg = "gainsboro")
+        self.user_name = tk.Label(self.panel, text="LOG IN TEXST", bg = "gainsboro")
         self.user_name.place(x = 400,  y= 235, anchor="center")
         log_out = tk.Button(self.panel, text="Log Out", width = 8, height = 1, command=lambda:
-            (self.app.open_window(0), self.app.load_account("Guest")))
+            (self.app.open_window(0), self.app.log_out()))
         log_out.place(x = 400, y = 260, anchor="center")
         
         # define matrix

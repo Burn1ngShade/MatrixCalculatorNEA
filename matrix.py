@@ -50,6 +50,10 @@ class Matrix:
     
     # functions
     
+    def swap_row(self, row_a, row_b):
+        for x in range(self.width):
+            self.content[x][row_a], self.content[x][row_b] = self.content[x][row_b], self.content[x][row_a] 
+    
     def is_square(self): # returns if the matrix is square or not
         return self.width == self.height
         
@@ -198,31 +202,47 @@ class Matrix:
             + self.content[2][0] * Matrix.cut(self, 2, 0).det()
             - self.content[3][0] * Matrix.cut(self, 3, 0).det() 
             )
-            
-    def rank(self): #find the largest matrix with a det of 0
-        print("RANK")
-        return 0
     
+    # ROW ECHELON FORM SHIT
+    
+    def find_non_zero_y(self, x, pivot_y):
+        print(x, pivot_y)
+        for y in range(pivot_y, self.height):
+            if self.content[x][y] != 0:
+                return y
+        return None
+    
+    def elem_below(self, x, pivot_y):
+        pivot_element = self.content[x][pivot_y]
+        for y in range(pivot_y + 1, self.height):
+            factor = self.content[x][y] / pivot_element
+            for i in range(self.width):
+                self.content[i][y] -= factor * self.content[i][pivot_y]
+            
     def row_echelon_form(self):
-        re_mat = Matrix.copy(self)
-        pivot_row = 0
+        ref_mat = Matrix.copy(self)
+        pivot_y = 0
         
-        for x in range(re_mat.width):
-            # find non zero row
-            for y in range(pivot_row, re_mat.height):
-                if re_mat.content[x][y] != 0:
-                    # swap row
-                    re_mat.print()
-                    
-                    re_mat.print()
-                    # make pibot one
-                    # eliminate bloew
-                    pivot_row += 1
-                    
-                    break
+        for x in range(ref_mat.width):
+            nonzero_y = ref_mat.find_non_zero_y(x, pivot_y)
+            if nonzero_y != None:
+                ref_mat.swap_row(pivot_y, nonzero_y)
+                ref_mat.print()
                 
-        return re_mat
+                ref_mat.elem_below(x, pivot_y)
+                ref_mat.print()
+                
+                pivot_y += 1
         
+        ref_mat.print()
+        return ref_mat
+    
+    def rank(self): #find the largest matrix with a det of 0
+        ref_mat = self.row_echelon_form()
+        print(ref_mat)
+        for y in range(ref_mat.height):
+            if ref_mat.content[ref_mat.width - 1][y] == 0: return y
+        return y + 1
         
         
     # two matrix methods

@@ -1,6 +1,8 @@
 import tkinter as tk
 import constants as c
 from matrix import Matrix
+import database_handler
+import time
 
 class Graphic_Matrix_Calculation():
     target_window = None
@@ -8,11 +10,13 @@ class Graphic_Matrix_Calculation():
     calculations = []
     current_page = 0
     
-    def __init__(self, matrices : list):
+    def __init__(self, matrices : list, creation_date = -1):
         self.panel = Graphic_Matrix_Calculation.target_window.panel
         self.matrices = matrices
-
         self.graphic = False
+        self.creation_date = time.time() if creation_date < 0 else creation_date
+        
+        print(self.creation_date)
 
         Graphic_Matrix_Calculation.calculations.append(self)
 
@@ -62,7 +66,7 @@ class Graphic_Matrix_Calculation():
 
     def destroy(self): # destroys graphic for the calculation
         Graphic_Matrix_Calculation.calculations.remove(self)
-        self.hide()
+        if self.graphic: self.hide()
 
     def move(self, y): # move graphic
         self.frame.place(x = 10, y = y)
@@ -102,6 +106,21 @@ class Graphic_Matrix_Calculation():
     @staticmethod
     def gmc_page_count():
         return (max(len(Graphic_Matrix_Calculation.calculations) - 1, 0) // 5) + 1
+    
+    @staticmethod
+    def save_matrix_calculations(account_name):
+        user_id = database_handler.get_record("Users", "Username", account_name)[0]
+        
+        for gmc in Graphic_Matrix_Calculation.calculations:
+            database_handler.insert_record("MatrixCalculations", "UserID, CreationDate", (user_id, gmc.creation_date))
+            
+    @staticmethod
+    def clear_matrix_calculations():
+        while len(Graphic_Matrix_Calculation.calculations) > 0:
+            Graphic_Matrix_Calculation.calculations[0].destroy()
+        
+
+        
         
         
         
