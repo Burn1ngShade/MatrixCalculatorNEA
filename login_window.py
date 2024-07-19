@@ -1,5 +1,6 @@
 import tkinter as tk
 import entry_validation as val
+import constants as c
 import database_handler
 
 class Login_Window:
@@ -44,7 +45,7 @@ class Login_Window:
         
         tk.Button(right_button_panel, width=20, height=1, text="Login To Account", command=lambda:
             self.account_login(self.login_username.get(), self.login_pswd.get())).place(x = 110, y = 25, anchor="center")
-        tk.Button(right_button_panel, width=20, height=1, text="Continue As Guest", command=lambda:
+        tk.Button(right_button_panel, width=20, height=1, text=f"Continue As {c.GUEST_USERNAME}", command=lambda:
             self.app.open_window(1)).place(x = 110, y = 75, anchor="center")
         
         tk.Button(center_button_panel, width=20, height=1, text="Exit Application",
@@ -61,7 +62,7 @@ class Login_Window:
         
     def account_create(self, username, password):
         if val.is_error(self.validate_username(username)) or val.is_error(self.validate_password(password)): return False
-        if username == "Guest": return val.raise_error("E000", "Username Can Not Be Guest.")
+        if username == c.GUEST_USERNAME: return val.raise_error("E000", f"Username Can Not Be {c.GUEST_USERNAME}.")
         if database_handler.get_record("Users", "Username", username) != None: return val.raise_error("E000", "Username Is Already Taken.")
 
         database_handler.insert_record("Users", "Username, Password", (username, password))

@@ -10,11 +10,14 @@ class Graphic_Matrix_Calculation():
     calculations = []
     current_page = 0
     
-    def __init__(self, matrices : list, creation_date = -1):
+    def __init__(self, matrices : list, creation_date = -1, matrix_calculation_id = -1):
         self.panel = Graphic_Matrix_Calculation.target_window.panel
         self.matrices = matrices
         self.graphic = False
+        
+        # database info
         self.creation_date = time.time() if creation_date < 0 else creation_date
+        self.matrix_calculation_id = matrix_calculation_id
         
         print(self.creation_date)
 
@@ -74,7 +77,7 @@ class Graphic_Matrix_Calculation():
     # static methods
 
     @staticmethod
-    def log_gmc(matrice):
+    def log_gmc(matrice, creation_date=-1, matrix_calculation_id=-1):
         for i in range(len(matrice)): #check for error in calculation 
                 if matrice[i][1] == Matrix.ERROR_CODE: return 
                 if len(matrice[i]) > 2 and Matrix.ERROR_CODE in matrice[i][2]: return
@@ -114,6 +117,16 @@ class Graphic_Matrix_Calculation():
         for gmc in Graphic_Matrix_Calculation.calculations:
             database_handler.insert_record("MatrixCalculations", "UserID, CreationDate", (user_id, gmc.creation_date))
             
+    @staticmethod 
+    def load_matrix_calculations(account_name):
+        user_id = database_handler.get_record("Users", "Username", account_name)[0]
+        
+        records = database_handler.get_record("MatrixCalculations", "UserID", user_id, True)
+        for record in records:
+            Graphic_Matrix_Calculation.log_gmc([("Test", Matrix(2,2))], float(record[2]), float(record[0]))
+            
+        print(Graphic_Matrix_Calculation.calculations)
+   
     @staticmethod
     def clear_matrix_calculations():
         while len(Graphic_Matrix_Calculation.calculations) > 0:

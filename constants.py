@@ -13,3 +13,6 @@ MATRIX_CALC_INCR_Y = 90
 
 # window sizes
 WINDOW_GEOMETRY = ["800x525", "800x800", "800x800"]
+
+# account stuff
+GUEST_USERNAME = "Guest"

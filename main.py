@@ -12,7 +12,7 @@ class Matrix_Calculator:
         self.root = root
         self.windows = [Login_Window(self), Matrix_Window(self), Visual_Window(self)]
         
-        self.load_account("Guest")
+        self.load_account(c.GUEST_USERNAME)
         self.open_window(0)
         
     def open_window(self, index):        
@@ -22,14 +22,15 @@ class Matrix_Calculator:
     def load_account(self, username):
         self.username = username
         self.windows[1].user_name.config(text=f"Logged In As [{username}]")
+        if (self.username != c.GUEST_USERNAME): Graphic_Matrix_Calculation.load_matrix_calculations(self.username)
         
     def log_out(self):
-        if (self.username != "Guest"): Graphic_Matrix_Calculation.save_matrix_calculations(self.username)
+        if (self.username != c.GUEST_USERNAME): Graphic_Matrix_Calculation.save_matrix_calculations(self.username)
         Graphic_Matrix_Calculation.clear_matrix_calculations()
-        self.load_account("Guest")
+        self.load_account(c.GUEST_USERNAME)
         
     def on_close(self):
-        if (self.username != "Guest"): Graphic_Matrix_Calculation.save_matrix_calculations(self.username)
+        if (self.username != c.GUEST_USERNAME): Graphic_Matrix_Calculation.save_matrix_calculations(self.username)
         self.root.destroy()
         
 root = tk.Tk()

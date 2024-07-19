@@ -9,6 +9,8 @@ error_codes = {
     "E100" : "Invalid Matrice", 
     #visualisation
     "E200" : "Dimension Error",
+    #sql
+    "E300" : "SQL Connection Error",
     #debug
     "E900" : "Not Implemented",
     "E901" : "Work In Progress",
