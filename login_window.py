@@ -1,7 +1,7 @@
 import tkinter as tk
 import entry_validation as val
 import constants as c
-import database_handler
+from database_connection import Database_Connection
 
 class Login_Window:
     def __init__(self, app):
@@ -61,27 +61,38 @@ class Login_Window:
         return True    
         
     def account_create(self, username, password):
+        db_con = Database_Connection()
+        
         if val.is_error(self.validate_username(username)) or val.is_error(self.validate_password(password)): return False
         if username == c.GUEST_USERNAME: return val.raise_error("E000", f"Username Can Not Be {c.GUEST_USERNAME}.")
-        if database_handler.get_record("Users", "Username", username) != None: return val.raise_error("E000", "Username Is Already Taken.")
+        if db_con.get_record("Users", "Username", username) != None: return val.raise_error("E000", "Username Is Already Taken.")
 
-        database_handler.insert_record("Users", "Username, Password", (username, password))
+        db_con.insert_record("Users", c.USER_DB_COLUMNS, (username, password))
+        db_con.close(True)
         self.app.load_account(username)
         self.app.open_window(1)
         
     def account_login(self, username, password):
-        record = database_handler.get_record("Users", "Username", username)
+        db_con = Database_Connection()
+        record = db_con.get_record("Users", "Username", username)
+        db_con.close()
         if record == None: return val.raise_error("E000", f"Account With Username [{username}] Does Not Exist.")
         if record[2] != password: return val.raise_error("E001", f"Password Is Incorrect.")
         self.app.load_account(username)
         self.app.open_window(1)
         
     def account_delete(self, username, password):
-        record = database_handler.get_record("Users", "Username", username)
+        db_con = Database_Connection()
+        record = db_con.get_record("Users", "Username", username)
         if record == None: return val.raise_error("E000", f"Account With Username [{username}] Does Not Exist.")
         if record[2] != password: return val.raise_error("E001", f"Password Is Incorrect.")
         if val.raise_promt(f"Delete Account [{username}]", f"Are You Sure You Want To Delete This Account? This Action Can Not Be Undone."):
-            database_handler.delete_record("Users", "Username", username)
+            matrix_calc = db_con.get_record("MatrixCalculations", "UserID", record[0], True)
+            for mat in matrix_calc:
+                db_con.delete_record("MatrixCalculations", "MatrixCalculationID", mat[0])
+                db_con.delete_record("MatrixCalculationElements", "MatrixCalculationID", mat[0])
+            db_con.delete_record("Users", "Username", username)
+        db_con.close(True)
 
     def application_quit(self):
         if val.raise_promt("Quit Application", "Are You Sure You Want To Close Matrix Caculator?"):

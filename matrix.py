@@ -16,6 +16,16 @@ class Matrix:
         self.set(0)
         
     @staticmethod
+    def from_list_string(str, width, height):
+        mat = Matrix(width, height)
+        contents = str.split(',')
+        for x in range(width):
+            for y in range(height):
+                mat.content[x][y] = float(contents[x * y + y])     
+                
+        return mat
+        
+    @staticmethod
     def copy(mat : Matrix):
         c_mat = Matrix(mat.width, mat.height)
         c_mat.set_from_mat(mat)
@@ -110,6 +120,13 @@ class Matrix:
         s = s[:-1]
         
         return s
+    
+    def to_list_string(self):
+        s = ""
+        for x in range(self.width):
+            for y in range(self.height):
+                s += f"{self.content[x][y]},"
+        return s[:-1]
 
     # single matrix methods
 

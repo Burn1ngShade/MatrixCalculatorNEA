@@ -14,5 +14,11 @@ MATRIX_CALC_INCR_Y = 90
 # window sizes
 WINDOW_GEOMETRY = ["800x525", "800x800", "800x800"]
 
-# account stuff
+# account
 GUEST_USERNAME = "Guest"
+
+# databases
+DEFAULT_DATABASE_PATH = "Assets/Matrix Calculator Database.db"
+MATRIX_CALCULATION_ELEMENT_DB_COLUMNS = ("MatrixCalculationID", "PrefixText", "SuffixText", "MatrixWidth", "MatrixHeight", "MatrixContent")
+MATRIX_CALCULATION_DB_COLUMNS = ("UserID", "CreationDate")
+USER_DB_COLUMNS = ("Username", "Password")

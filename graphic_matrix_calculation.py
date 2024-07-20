@@ -1,7 +1,7 @@
 import tkinter as tk
 import constants as c
 from matrix import Matrix
-import database_handler
+from database_connection import Database_Connection
 import time
 
 class Graphic_Matrix_Calculation():
@@ -9,6 +9,8 @@ class Graphic_Matrix_Calculation():
     
     calculations = []
     current_page = 0
+    
+    database_entrys_to_remove = []
     
     def __init__(self, matrices : list, creation_date = -1, matrix_calculation_id = -1):
         self.panel = Graphic_Matrix_Calculation.target_window.panel
@@ -18,8 +20,6 @@ class Graphic_Matrix_Calculation():
         # database info
         self.creation_date = time.time() if creation_date < 0 else creation_date
         self.matrix_calculation_id = matrix_calculation_id
-        
-        print(self.creation_date)
 
         Graphic_Matrix_Calculation.calculations.append(self)
 
@@ -47,7 +47,7 @@ class Graphic_Matrix_Calculation():
         #buttons
 
         tk.Button(self.frame, text="X", width=1, height=1, command=lambda:
-        (self.destroy())).place(
+        (self.destroy(), Graphic_Matrix_Calculation.database_entrys_to_remove.append(self.matrix_calculation_id))).place(
         x=758, y=3)
         
         if len(self.matrices) <= 1: return # not a matrix operation so no resultant matrix
@@ -68,7 +68,7 @@ class Graphic_Matrix_Calculation():
         Graphic_Matrix_Calculation.update_gmc_list()
 
     def destroy(self): # destroys graphic for the calculation
-        Graphic_Matrix_Calculation.calculations.remove(self)
+        Graphic_Matrix_Calculation.calculations.remove(self)        
         if self.graphic: self.hide()
 
     def move(self, y): # move graphic
@@ -82,7 +82,7 @@ class Graphic_Matrix_Calculation():
                 if matrice[i][1] == Matrix.ERROR_CODE: return 
                 if len(matrice[i]) > 2 and Matrix.ERROR_CODE in matrice[i][2]: return
 
-        gmc = Graphic_Matrix_Calculation(matrice)
+        gmc = Graphic_Matrix_Calculation(matrice, creation_date, matrix_calculation_id)
         gmc.update_gmc_list()
 
     @staticmethod
@@ -112,20 +112,45 @@ class Graphic_Matrix_Calculation():
     
     @staticmethod
     def save_matrix_calculations(account_name):
-        user_id = database_handler.get_record("Users", "Username", account_name)[0]
+        db_con = Database_Connection()
+        user_id = db_con.get_record("Users", "Username", account_name)[0]
         
-        for gmc in Graphic_Matrix_Calculation.calculations:
-            database_handler.insert_record("MatrixCalculations", "UserID, CreationDate", (user_id, gmc.creation_date))
+        for id in Graphic_Matrix_Calculation.database_entrys_to_remove: #delete entrys weve been told to delete
+            if id == -1: continue
+            db_con.delete_record("MatrixCalculations", "MatrixCalculationID", id)
+            db_con.delete_record("MatrixCalculationElements", "MatrixCalculationID", id)
+            
+        Graphic_Matrix_Calculation.database_entrys_to_remove = []
+        
+        for calc in Graphic_Matrix_Calculation.calculations:
+            if calc.matrix_calculation_id == -1: #this is a new calculation
+                db_con.insert_record("MatrixCalculations", c.MATRIX_CALCULATION_DB_COLUMNS, (user_id, calc.creation_date))
+                id = db_con.get_record("MatrixCalculations", "CreationDate", calc.creation_date)[0]
+                for m in calc.matrices:
+                    db_con.insert_record("MatrixCalculationElements", c.MATRIX_CALCULATION_ELEMENT_DB_COLUMNS, (id, m[0], "" if len(m) < 3 else m[2], m[1].width, m[1].height, m[1].to_list_string()))
+                
+        # i belive i dont have to touch records already in the database cause duh
+    
+        db_con.close(True)
             
     @staticmethod 
     def load_matrix_calculations(account_name):
-        user_id = database_handler.get_record("Users", "Username", account_name)[0]
+        db_con = Database_Connection()
+        user_id = db_con.get_record("Users", "Username", account_name)[0]
+        records = db_con.get_record("MatrixCalculations", "UserID", user_id, True)
         
-        records = database_handler.get_record("MatrixCalculations", "UserID", user_id, True)
         for record in records:
-            Graphic_Matrix_Calculation.log_gmc([("Test", Matrix(2,2))], float(record[2]), float(record[0]))
+            matrice_records = db_con.get_record("MatrixCalculationElements", "MatrixCalculationID", record[0], True)
             
-        print(Graphic_Matrix_Calculation.calculations)
+            matrice = []
+            for r in matrice_records:
+                m = Matrix.from_list_string(r[6], r[4], r[5])
+                if len(r[3]) > 0: matrice.append((r[2], m, r[3]))
+                else: matrice.append((r[2], m))
+            
+            Graphic_Matrix_Calculation.log_gmc(matrice, float(record[2]), float(record[0]))
+            
+        db_con.close()
    
     @staticmethod
     def clear_matrix_calculations():
