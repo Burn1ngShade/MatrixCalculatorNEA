@@ -3,6 +3,7 @@ import constants as c
 from matrix import Matrix
 from database_connection import Database_Connection
 import time
+import merge_sort
 
 class Graphic_Matrix_Calculation():
     target_window = None
@@ -11,6 +12,7 @@ class Graphic_Matrix_Calculation():
     current_page = 0
     
     database_entrys_to_remove = []
+    sort_method = 0
     
     def __init__(self, matrices : list, creation_date = -1, matrix_calculation_id = -1):
         self.panel = Graphic_Matrix_Calculation.target_window.panel
@@ -27,6 +29,7 @@ class Graphic_Matrix_Calculation():
         self.graphic = True
         
         self.frame = tk.Frame(self.panel, bg="gainsboro", width = 780, height = 81)
+        self.frame.option_add( "*font", "Consolas 8" )
         self.frame.place(x = 10, y = y, anchor="w")
         
         x_offset = 10
@@ -52,8 +55,9 @@ class Graphic_Matrix_Calculation():
         
         if len(self.matrices) <= 1: return # not a matrix operation so no resultant matrix
         
-        tk.Button(self.frame, text="Visualise", width= 14, height=1, command=lambda:
-        (self.target_window.app.windows[2].visualise_matrix(self.matrices[-1][1]))).place(x = 662, y=3)
+        if f"{self.matrices[-1][1].height}x{self.matrices[-1][1].width}" in c.VALID_VISUAL_MATRIX_DIMENSIONS:
+            tk.Button(self.frame, text="Visualise", width= 14, height=1, command=lambda:
+                (self.target_window.app.windows[2].visualise_matrix(self.matrices[-1][1]))).place(x = 662, y=3)
         tk.Button(self.frame, text="Insert In A", width=17, height=1, command=lambda:
         (Graphic_Matrix_Calculation.target_window.mat_a.set_from_mat(self.matrices[-1][1]), Graphic_Matrix_Calculation.target_window.mat_a.draw())).place(x = 662, y=29)
         tk.Button(self.frame, text="Insert In B", width=17, height=1, command=lambda:
@@ -83,6 +87,7 @@ class Graphic_Matrix_Calculation():
                 if len(matrice[i]) > 2 and Matrix.ERROR_CODE in matrice[i][2]: return
 
         gmc = Graphic_Matrix_Calculation(matrice, creation_date, matrix_calculation_id)
+        if Graphic_Matrix_Calculation.sort_method != 0: Graphic_Matrix_Calculation.sort()
         gmc.update_gmc_list()
 
     @staticmethod
@@ -156,6 +161,27 @@ class Graphic_Matrix_Calculation():
     def clear_matrix_calculations():
         while len(Graphic_Matrix_Calculation.calculations) > 0:
             Graphic_Matrix_Calculation.calculations[0].destroy()
+            
+    @staticmethod
+    def on_sort_method_select(event, combobox):
+        Graphic_Matrix_Calculation.target_window.panel.focus()
+        combobox.selection_clear()
+        
+        method = c.MATRIX_CALC_SORT_OPTIONS.index(combobox.get())
+        
+        if method == Graphic_Matrix_Calculation.sort_method: return
+        Graphic_Matrix_Calculation.sort_method = method
+        Graphic_Matrix_Calculation.sort()
+        
+    @staticmethod
+    def sort():       
+        if Graphic_Matrix_Calculation.sort_method == 0:
+            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.creation_date for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+            Graphic_Matrix_Calculation.update_gmc_list()
+        elif Graphic_Matrix_Calculation.sort_method == 1:
+            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.creation_date for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+            Graphic_Matrix_Calculation.calculations.reverse()
+            Graphic_Matrix_Calculation.update_gmc_list() 
         
 
         

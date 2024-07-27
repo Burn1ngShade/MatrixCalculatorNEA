@@ -13,7 +13,7 @@ class Matrix_Calculator:
         self.windows = [Login_Window(self), Matrix_Window(self), Visual_Window(self)]
         
         self.load_account(c.GUEST_USERNAME)
-        self.open_window(0)
+        self.open_window(1)
         
     def open_window(self, index):        
         self.windows[index].panel.tkraise()

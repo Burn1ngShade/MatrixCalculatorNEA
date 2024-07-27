@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk 
 import constants as c
 from matrix import Matrix
 from graphic_matrix import Graphic_Matrix
@@ -26,7 +27,16 @@ class Matrix_Window:
         
         # gmc options
         self.prev_trans_text = tk.Label(self.panel, font=("Consolas", 12), text="Previous Matrix Calculations --- Page [1 / 1]", bg = "gainsboro")
-        self.prev_trans_text.place(x = 10,  y= 326, anchor="w")
+        self.prev_trans_text.place(x = 10,  y= 326, anchor="w")        
+        
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure("TCombobox", font=("Consolas", 12), fieldbackground="gainsboro", background="gainsboro", foreground="black", arrowcolor="black")
+        
+        self.sort_gmc_dd = ttk.Combobox(self.panel, width=28, font=("Consolas", 12), state='readonly', values= c.MATRIX_CALC_SORT_OPTIONS)
+        self.sort_gmc_dd.set("Creation Date (Descending)")
+        self.sort_gmc_dd.place(x = 790, y = 326, anchor="e")
+        self.sort_gmc_dd.bind("<<ComboboxSelected>>", lambda event: GMC.on_sort_method_select(event, self.sort_gmc_dd))
         
         tk.Frame(self.panel, bg="gainsboro", height=31, width=44).place(x = 450, y=326, anchor="center")
         

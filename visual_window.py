@@ -1,77 +1,190 @@
 import tkinter as tk
+from tkinter import Canvas
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 from matrix import Matrix
 import entry_validation as val
+import constants as c
 
 class Visual_Window:
-    unit_square = [(0, 0), (0, 1), (1, 1), (1, 0)]
-    
     def __init__(self, app):
         self.app = app
         
-        self.panel = tk.Frame(app.root, bg="snow3")
-        self.panel.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.panel.option_add( "*font", "Consolas 8" )
+        plt.rcParams['font.family'] = 'Consolas'
+        plt.rcParams['font.size'] = 12
+        plt.rcParams['font.weight'] = 'ultralight'
         
-        tk.Button(self.panel, text="Exit", width=17, height=1, command=lambda:(self.app.open_window(1))).place(x = 400, y = 20, anchor="center")
+        self.panel = tk.Frame(app.root, bg="snow3")
+        self.panel.option_add( "*font", "Consolas 12")
+        self.panel.place(relx=0, rely=0, relwidth=1, relheight=1)
+        
+        self.fig = Figure(figsize=(6.7, 6.7), dpi=100)
+        self.fig.patch.set_facecolor("#cdc9c9")
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel)
+        self.canvas.get_tk_widget().place(x = -10, y = -20, anchor="nw")
+        
+        self.bot_info_frame = tk.Frame(self.panel, bg="gainsboro", width=800, height=150)
+        self.bot_info_frame.place(x=400, y=800, anchor="s")
+        self.right_info_frame = tk.Frame(self.panel, bg="snow3", width=190, height=620)
+        self.right_info_frame.place(x=800, y=0, anchor="ne")
+        self.matrix_label = tk.Label(self.bot_info_frame, bg="gainsboro", text="Visualising Matrix:")
+        self.matrix_label.place(x=150, y=0, anchor="n")
+        self.matrix_info_label = tk.Label(self.bot_info_frame, bg="gainsboro", text="Matrix Info:")
+        self.matrix_info_label.place(x = 650, y =0, anchor="n")
+        self.point_text = tk.Label(self.right_info_frame, bg="gainsboro", anchor="w", justify="left", width=100)
+        self.point_text.place(x = 0, y = 143, anchor="nw")
+        
+        self.legend_text = tk.Label(self.right_info_frame, bg="gainsboro", anchor="w", justify="left", width=100)
+        self.legend_text.place(x=0, y=60, anchor="nw")
+        self.legend_text.config(text="  Base Points\n  Transformed Points\n  Overlap") 
+        
+        canvas = Canvas(self.right_info_frame, width=15, height=59, bg="gainsboro", highlightbackground="gainsboro")
+        canvas.place(x = 0, y = 60, anchor="nw")
+        canvas.create_rectangle(5, 8, 15, 18, fill="red")
+        canvas.create_rectangle(5, 27, 15, 37, fill="blue")
+        canvas.create_rectangle(5, 46, 15, 56, fill="green")
+        
+        tk.Button(self.bot_info_frame, text="Exit", width=17, height=1, command=lambda:(self.app.open_window(1))).place(x = 400, y = 10, anchor="n")
+        
+        self.identify_text = tk.Label(self.bot_info_frame, bg="gainsboro", width=100, text="Transformation Details:")
+        self.identify_text.place(x=400, y=100, anchor="n")
         
     def visualise_matrix(self, mat : Matrix):
-        if mat.width == 4 or mat.height == 4: return val.raise_error("E200", "4 Dimensional Matrice Can Not Be Visualised. (Only Matrix Of 1x1, 2x2, 3x3, 2x1, 1x2, 3x1 and 1x3 Can Be Visualised).")
+        mat_dimensions = f"{mat.height}x{mat.width}"
+        
+        # ui
+        self.identify_text.config(text=f"Transformation Details:\n{self.identify_matrix_type(mat)}")
+        self.matrix_label.config(text=f"Visualising Matrix:\n{mat.to_string()}")
+        self.matrix_info_label.config(text=f"Matrix Info:\nDimensions - {mat_dimensions}\nRank - {mat.rank()}")
+        
+        if mat_dimensions not in c.VALID_VISUAL_MATRIX_DIMENSIONS: 
+            return val.raise_error("E200", f"Matrice Of Dimensions {mat.height}x{mat.width} Can Not Be Visualised. (Only Matrix Of 1x1, 2x2, 3x3, 2x1, 1x2, 3x1 and 1x3 Can Be Visualised).")
         
         self.app.open_window(2)
         
-        points = []
-        if mat.width == 2 and mat.height == 2:
-            for i in range(len(self.unit_square)):
-                mat2 = Matrix(1, 2)
-                mat2.set_from_values(self.unit_square[i])
-                mat_result = Matrix.multiply_matrice(mat, mat2)
-                points.append((mat_result.content[0][0], mat_result.content[0][1]))
+        if mat_dimensions in c.TWO_DIMENSION_MATRIX_TRANSFORMATIONS:
+            points = []
+            for point in c.UNIT_SQUARE:
+                point_mat = Matrix(1, 2) 
+                point_mat.set_from_values(point)
+            
+                if mat_dimensions == "1x1":
+                    point_mat = point_mat.scalar_multiply(mat.content[0][0])
+                    points.append((point_mat.content[0][0], point_mat.content[0][1]))    
+                elif mat_dimensions == "1x2":
+                    point_mat = Matrix.multiply_matrice(mat, point_mat)
+                    points.append((point_mat.content[0][0], 0))
+                elif mat_dimensions == "2x1":
+                    point_mat = Matrix.add_sub_matrice(mat, point_mat)
+                    points.append((point_mat.content[0][0], point_mat.content[0][1]))
+                elif mat_dimensions == "2x2":
+                    point_mat = Matrix.multiply_matrice(mat, point_mat)
+                    points.append((point_mat.content[0][0], point_mat.content[0][1]))
+                    
+            self.graph_unit_square(c.UNIT_SQUARE, points)
+            
+        elif mat_dimensions in c.THREE_DIMENSION_MATRIX_TRANSFORMATION:
+            points = []
+            for point in c.UNIT_CUBE:
+                point_mat = Matrix(1, 3)
+                point_mat.set_from_values(point)
                 
-            self.unit_square_visual(self.unit_square, points)
+                if mat_dimensions == "1x3":
+                    point_mat = Matrix.multiply_matrice(mat, point_mat)
+                    points.append((point_mat.content[0][0], 0, 0))
+                elif mat_dimensions == "3x1":
+                    point_mat = Matrix.add_sub_matrice(mat, point_mat)
+                    points.append((point_mat.content[0][0], point_mat.content[0][1], point_mat.content[0][2]))
+                elif mat_dimensions == "3x3":
+                    point_mat = Matrix.multiply_matrice(mat, point_mat)
+                    points.append((point_mat.content[0][0], point_mat.content[0][1], point_mat.content[0][2]))
+                    
+            self.unit_cube_visual(c.UNIT_CUBE, points)
+            self.point_text.config(
+text=f"Orignal Points:\n{'\n'.join(f"({vec[0]}, {vec[1]}, {vec[2]})" for vec in c.UNIT_CUBE)}\n\nTrans Points:\n{'\n'.join(f"({vec[0]:g}, {vec[1]:g}, {vec[2]:g})" for vec in points)}")
         
-    def unit_square_visual(self, points_base, points_transformed):
-        fig = Figure(figsize=(7, 7), dpi=100)
-        fig.patch.set_facecolor("#cdc9c9")
-        graph = fig.add_subplot(111)
+    def graph_unit_square(self, base_points, trans_points):
+        # set up graph for 2d rendering
+        self.fig.clear()
+        graph = self.fig.add_subplot(111)
+        graph.set_facecolor("#DCDCDC") #set foreground to gainsboro
+        graph.grid(True, zorder=0) #gridlines 
+        graph.set_title("Effects Of Matrix On The Unit Square")
         
-        overlap = set(points_base) & set(points_transformed)
+        # update ui
+        self.point_text.config(text=
+            f"Orignal Points:\n{'\n'.join(f"({p[0]}, {p[1]})" for p in base_points)}\n\nTransformed Points:\n{'\n'.join(f"({p[0]:g}, {p[1]:g})" for p in trans_points)}")
         
-        base_x, base_y = [point[0] for point in points_base], [point[1] for point in points_base]
-        trans_x, trans_y = [point[0] for point in points_transformed], [point[1] for point in points_transformed]
-        over_x, over_y = [point[0] for point in overlap], [point[1] for point in overlap]
-
-        graph.scatter(base_x, base_y, color="red", label="Unit Square")
-        base_x.append(base_x[0]), base_y.append(base_y[0])
-        graph.plot(base_x, base_y, color="red")
-        graph.scatter(trans_x, trans_y, color = "blue", label="Transformed Unit Square")
-        trans_x.append(trans_x[0]), trans_y.append(base_y[0])
-        graph.plot(trans_x, trans_y, color="blue")
-        graph.scatter(over_x, over_y, color="green", label="Overlapping Points")
-        graph.set_title("Matrix Effects On The Unit Square")
-        graph.set_xlabel("YO")
+        # convert from lists of points to two seperate lists of floats
+        overlap_points = list(zip(*(set(base_points) & set(trans_points)))) #points in both lists
+        base_points = list(zip(*base_points)) 
+        trans_points = list(zip(*trans_points))
+        
+        # now lets place points onto the graph
+        graph.scatter(base_points[0], base_points[1], color="red", label="Base Unit Square", zorder=5) # base points
+        graph.scatter(trans_points[0], trans_points[1], color="blue", label="Transformed Unit Square", zorder=6) # transformed points
+        graph.scatter(overlap_points[0], overlap_points[1], s=50, color="green", label="Overlap", zorder=7) # overlap points
+        
+        # add additional point repeats
+        base_points[0] += (base_points[0][0],)
+        base_points[1] += (base_points[1][0],)
+        trans_points[0] += (trans_points[0][0],)
+        trans_points[1] += (trans_points[1][0],)
+        
+        # overlapping lines - as we are always using the unit square we can skip any complicated gradient and overlap maths and just check the four lines making up the unit square
+        for i in range(len(base_points[0]) - 1):
+            bp, tp = (base_points[0][i], base_points[1][i]), (trans_points[0][i], trans_points[1][i])  
+            bp_next, tp_next = (base_points[0][i + 1], base_points[1][i + 1]), (trans_points[0][i + 1], trans_points[1][i + 1])
+            
+            print(tp, tp_next)
+            
+            if tp_next[1] == tp[1] and (tp[1] == 0 or tp[1] == 1): # horizontal line
+                if max(tp[0], tp_next[0]) < 0 or min(tp[0], tp_next[0]) > 1: continue
+                graph.plot([max(0, min(tp[0], tp_next[0])), min(1, max(tp[0], tp_next[0]))], [tp[1], tp[1]], color="green", zorder=4)
+            if tp_next[0] == tp[0] and (tp[0] == 0 or tp[0] == 1): # vertical line
+                if max(tp[1], tp_next[1]) < 0 or min(tp[1], tp_next[1]) > 1: continue
+                graph.plot([tp[0], tp[0]], [max(0, min(tp[1], tp_next[1])), min(1, max(tp[1], tp_next[1]))], color="green", zorder=4)
+        
+        # now lets place lines onto graph (weird ',' syntax tells python its a tuple)
+        graph.plot(base_points[0], base_points[1], color="red", zorder=2)
+        graph.plot(trans_points[0], trans_points[1], color="blue", zorder=3)
+        
+        # lets set graph x and y limits to be the same
+        min_limit, max_limit = min(graph.get_xlim()[0], graph.get_ylim()[0]), max(graph.get_xlim()[1], graph.get_ylim()[1])
+        graph.set_xlim(min_limit, max_limit)
+        graph.set_ylim(min_limit, max_limit)
+        
+        self.canvas.draw() #update canvas with grid
+        
+        
+        
+    def unit_cube_visual(self, points_base, points_transformed):
+        self.fig.clear()
+        graph = self.fig.add_subplot(111, projection="3d")
+        graph.set_facecolor("#DCDCDC")
+        
+        base_x, base_y, base_z = [p[0] for p in points_base], [p[1] for p in points_base], [p[2] for p in points_base]
+        graph.scatter(base_x, base_y, base_z, color="red", label="Unit Cube")
+        
+        trans_x, trans_y, trans_z = [p[0] for p in points_transformed], [p[1] for p in points_transformed], [p[2] for p in points_transformed]
+        graph.scatter(trans_x, trans_y, trans_z, color="blue", label="Unit Cube")
         graph.legend(loc="upper right")
+        self.canvas.draw()
         
-        print(graph.get_xlim())
-        print(graph.get_ylim())
+    def identify_matrix_type(self, mat : Matrix):
+        mat_dimensions = f"{mat.height}x{mat.width}"
+        if mat_dimensions == "1x1":
+            return f"Scalar Multiplication By Scale Factor {mat.content[0][0]}"
+        elif mat_dimensions == "2x1":
+            return f"Translation Of A 2D Point By Vector ({mat.content[0][0]}, {mat.content[0][1]})"
+        elif mat_dimensions == "1x2":
+            return f"Dot Product Of Matrix And Unit Square"
+        elif mat_dimensions == "3x1":
+            return f"Translation Of A 3D Point By Vector ({mat.content[0][0]}, {mat.content[0][1]}, {mat.content[0][2]})"
+        elif mat_dimensions == "1x3":
+            return f"Dot Product Of Matrix And Unit Cube"
         
-        max_limt = max(graph.get_xlim()[1], graph.get_ylim()[1])
-        min_limit = min(graph.get_xlim()[0], graph.get_ylim()[0])
-        
-        graph.set_xlim(min_limit, max_limt)
-        graph.set_ylim(min_limit, max_limt)
-        
-        canvas = FigureCanvasTkAgg(fig, master=self.panel)
-        canvas.draw()
-        canvas.get_tk_widget().place(x = 400, y = 400, anchor="center")
-        
-#2x2
-#3x3
-#2x1
-#3x1
-#1x2
-#1x3 //same way as 3x1
-#1x1
+        return f"I COULDNT TELL YOU MATE"
         
         

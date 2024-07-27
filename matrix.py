@@ -278,6 +278,8 @@ class Matrix:
         
     @staticmethod
     def multiply_matrice(mat_a: Matrix, mat_b: Matrix): #finds the dot product of 2 matrice
+        mat_a.print()
+        mat_b.print()
         if mat_a.width != mat_b.height: #requirement for matrix multiplication
             messagebox.showinfo("Invalid Calculation", "Matrix A Must Have The Same Number Of Columns As Matrix B Has Rows.")
             return Matrix.ERROR_CODE

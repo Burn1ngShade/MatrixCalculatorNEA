@@ -28,6 +28,8 @@ class Graphic_Matrix(Matrix):
         x_offset = x_base - 40 * (self.width - 1)
         y_offset = c.MATRIX_Y_BASE - 15 * (self.height - 1)
         
+        self.panel.option_add( "*font", "Consolas 8" )
+        
         for x in range(self.width):
             self.content_entry.append([])
             for y in range(self.height):

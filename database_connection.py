@@ -31,7 +31,3 @@ class Database_Connection:
     def close(self, commit = False):
         if (commit): self.con.commit()
         self.con.close()
-        
-# WE NEED TO UPDATE DELETE ACCOUNT TO DELETE RECORDS ON ALL DATABASES
-# DELETING FROM RECORD NEEDS TO DELETE FROM DATABASE
-# NEED TO SORT THE LOADED DATA
