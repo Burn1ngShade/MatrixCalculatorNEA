@@ -85,6 +85,7 @@ class Graphic_Matrix_Calculation():
         for i in range(len(matrice)): #check for error in calculation 
                 if matrice[i][1] == Matrix.ERROR_CODE: return 
                 if len(matrice[i]) > 2 and Matrix.ERROR_CODE in matrice[i][2]: return
+                matrice[i] = (matrice[i][0], Matrix.copy(matrice[i][1])) if len(matrice[i]) <= 2 else (matrice[i][0], Matrix.copy(matrice[i][1]), matrice[i][2]) 
 
         gmc = Graphic_Matrix_Calculation(matrice, creation_date, matrix_calculation_id)
         if Graphic_Matrix_Calculation.sort_method != 0: Graphic_Matrix_Calculation.sort()
@@ -175,13 +176,19 @@ class Graphic_Matrix_Calculation():
         
     @staticmethod
     def sort():       
-        if Graphic_Matrix_Calculation.sort_method == 0:
+        sort_type = Graphic_Matrix_Calculation.sort_method // 2
+        sort_reverse = Graphic_Matrix_Calculation.sort_method % 2
+        
+        if sort_type == 0:
             Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.creation_date for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
-            Graphic_Matrix_Calculation.update_gmc_list()
-        elif Graphic_Matrix_Calculation.sort_method == 1:
-            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.creation_date for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
-            Graphic_Matrix_Calculation.calculations.reverse()
-            Graphic_Matrix_Calculation.update_gmc_list() 
+        elif sort_type == 1:
+            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.matrices[0][1].width * value.matrices[0][1].height for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+        elif sort_type == 2:
+            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.matrices[-1][1].rank() for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+        
+        if sort_reverse == 1: Graphic_Matrix_Calculation.calculations.reverse()
+
+        Graphic_Matrix_Calculation.update_gmc_list()
         
 
         

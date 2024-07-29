@@ -3,9 +3,9 @@ from tkinter import messagebox
 import inspect
 
 #base class for matrix representation
-class Matrix:
-    ERROR_CODE = "E000" #extremely long random number that can be used as a error code
-    
+class Matrix:    
+    ERROR_CODE = "E100"
+
     # constructors
     
     def __init__(self, width, height):
@@ -66,6 +66,13 @@ class Matrix:
     
     def is_square(self): # returns if the matrix is square or not
         return self.width == self.height
+    
+    def is_identity(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                if x == y and self.content[x][y] != 1: return False
+                if x != y and self.content[x][y] != 0: return False
+        return True
         
     def set_width(self, width): # sets the width of the matrix
         self.width = min(max(width, 1), 4)

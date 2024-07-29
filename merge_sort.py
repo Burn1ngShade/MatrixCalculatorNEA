@@ -19,7 +19,7 @@ def merge(arr, l, m, r):
     k = l     # Initial index of merged subarray
  
     while i < n1 and j < n2:
-        if L[i] <= R[j]:
+        if L[i][0] <= R[j][0]:
             arr[k] = L[i]
             i += 1
         else:
