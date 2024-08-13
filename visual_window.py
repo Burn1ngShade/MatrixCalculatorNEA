@@ -5,8 +5,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matrix import Matrix
-import entry_validation as val
 import constants as c
+from error_handler import Error_Handler as err
 
 class Visual_Window:
     def __init__(self, app):
@@ -59,7 +59,7 @@ class Visual_Window:
         self.matrix_info_label.config(text=f"Matrix Info:\nDimensions - {mat_dimensions}\nRank - {mat.rank()}")
         
         if mat_dimensions not in c.VALID_VISUAL_MATRIX_DIMENSIONS: 
-            return val.raise_error("E200", f"Matrice Of Dimensions {mat.height}x{mat.width} Can Not Be Visualised. (Only Matrix Of 1x1, 2x2, 3x3, 2x1, 1x2, 3x1 and 1x3 Can Be Visualised).")
+            return err.raise_error("E200", f"Matrice Of Dimensions {mat.height}x{mat.width} Can Not Be Visualised. (Only Matrix Of 1x1, 2x2, 3x3, 2x1, 1x2, 3x1 and 1x3 Can Be Visualised).")
         
         self.app.open_window(2)
         
@@ -262,6 +262,42 @@ class Visual_Window:
             return scale_shear if len(scale_shear) > 0 else "Mix Of Scaling And Shearing (Unidentifiable)"
         elif mat_dimensions == "3x3": #this is the hardddddddddddddddd one
             if mat.is_identity(): return f"Identity Matrix (No Effect)"
-            return f"3x3 Matrix Transformation (IDFK WHAT G)"
+            
+            # rotation
+            
+            if mat.in_format("1,0,0,0,xS,yS-,0,yS,xS"): #rotation around x axis
+                theta_cos = math.acos(mat.content[1][1])
+                theta_sin = math.asin(mat.content[1][2])
+                if math.isclose(math.cos(theta_cos), mat.content[1][1], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[1][2], abs_tol=0.001):
+                    return f"Anticlockwise Rotation Through The X Axis By {round(math.degrees(theta_cos), 2):g} Degrees"
+                elif math.isclose(math.cos(theta_sin), mat.content[1][1], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[1][2], abs_tol=0.001):
+                    return f"Anticlockwise Rotation Through The X Axis By {round(math.degrees(theta_sin), 2):g} Degrees"
+            
+            if mat.in_format("xS,0,yS,0,1,0,yS-,0,xS"): #rotation around y axis
+                theta_cos = math.acos(mat.content[0][0])
+                theta_sin = math.asin(mat.content[2][0])
+                print("yo")
+                if math.isclose(math.cos(theta_cos), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[2][0], abs_tol=0.001):
+                    return f"Anticlockwise Rotation Through The Y Axis By {round(math.degrees(theta_cos), 2):g} Degrees"
+                elif math.isclose(math.cos(theta_sin), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[2][0], abs_tol=0.001):
+                    return f"Anticlockwise Rotation Through The Y Axis By {round(math.degrees(theta_sin), 2):g} Degrees"
+                
+            if mat.in_format("xS,yS-,0,yS,xS,0,0,0,1"): #rotation around y axis
+                theta_cos = math.acos(mat.content[0][0])
+                theta_sin = math.asin(mat.content[0][1])
+                print("yo")
+                if math.isclose(math.cos(theta_cos), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[0][1], abs_tol=0.001):
+                    return f"Anticlockwise Rotation Through The Z Axis By {round(math.degrees(theta_cos), 2):g} Degrees"
+                elif math.isclose(math.cos(theta_sin), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[0][1], abs_tol=0.001):
+                    return f"Anticlockwise Rotation Through The Z Axis By {round(math.degrees(theta_sin), 2):g} Degrees"
+            
+            scale_shear = ""
+            if not mat.in_format("a,0,0,0,b,0,0,0,c"):
+                scale_shear += f"Shearing (Unidentifiable) "
+            if not mat.in_format("1,a,b,c,1,d,e,f,1"):
+                if len(scale_shear) > 0: scale_shear += "Then "
+                scale_shear += f"Stretched By Scale Factor ({mat.content[0][0]:g}, {mat.content[1][1]:g}, {mat.content[2][2]:g})"
+                
+            return scale_shear
         
         

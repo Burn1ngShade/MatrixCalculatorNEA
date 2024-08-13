@@ -1,32 +1,3 @@
-from tkinter import messagebox
-
-#first number for screen (0 -> login... 9-> debug, next 2 for index)
-error_codes = {
-    #login
-    "E000" : "Invalid Username", 
-    "E001" : "Invalid Password",
-    #matrix 
-    "E100" : "Invalid Matrice", 
-    #visualisation
-    "E200" : "Dimension Error",
-    #sql
-    "E300" : "SQL Connection Error",
-    #debug
-    "E900" : "Not Implemented",
-    "E901" : "Work In Progress",
-    }
-
-#raises warning message to the user
-def raise_error(error_code, message):
-    messagebox.showinfo(error_codes[error_code] + f" [{error_code}]", message)
-    return error_code
-
-def is_error(message):
-    return message in error_codes
-
-def raise_promt(question, message):
-    return messagebox.askquestion(question, message) == 'yes'
-
 #validate if input is suitable for matrix and applys update to matrix
 def validate_mat_input(value, widget_name, mat):
     widget_index = int(widget_name[15:17])

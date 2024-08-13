@@ -1,11 +1,10 @@
 from __future__ import annotations
 from tkinter import messagebox
 import inspect
+from error_handler import Error_Handler as err
 
 #base class for matrix representation
 class Matrix:    
-    ERROR_CODE = "E100"
-
     # constructors
     
     def __init__(self, width, height):
@@ -149,12 +148,10 @@ class Matrix:
     
     def to_pow(self, factor):
         if not self.is_square(): 
-            messagebox.showinfo("Invalid Calculation", "Only Square Matrice Can Be Raised To A Power.")
-            return Matrix.ERROR_CODE #can only power square matrice    
+            return err.raise_error("E101", "Only Square Matrice Can Be Raised To A Power.")
     
         if abs(factor) > 10: 
-            messagebox.showinfo("Invalid Calculation", "Powers Must Range Between -10 and 10.")
-            return Matrix.ERROR_CODE #computation will just take 2 long
+            return err.raise_error("E101", "Powers Must Range Between -10 and 10.")
         
         if factor == 0: return Matrix.identiy(self.width) # A^0 = I (list x^0 = 1)
         
@@ -180,13 +177,11 @@ class Matrix:
     
     def invert(self):
         if not self.is_square():
-            messagebox.showinfo("Invalid Calculation", "Only Square Matrice Can Be Inverted.")
-            return Matrix.ERROR_CODE
+            return err.raise_error("E101", "Only Square Matrice Can Be Inverted.")
         
         det = self.det()
         if det == 0:
-            messagebox.showinfo("Invalid Calculation", "Matrice With A Determinant Of 0 Can't Be Inverted.")
-            return Matrix.ERROR_CODE
+            return err.raise_error("E101", "Matrice With A Determinant Of 0 Can't Be Inverted.")
         
         inv_mat = Matrix.copy(self)
         
@@ -206,8 +201,7 @@ class Matrix:
             
     def det(self): #i think this function counts as recursive?
         if not self.is_square():
-            messagebox.showinfo("Invalid Calculation", "Only Square Matrice Have Determinants.")
-            return Matrix.ERROR_CODE
+            return err.raise_error("E101", "Only Square Matrice Have Determinants.")
         
         if self.width == 1:
             return self.content[0][0]
@@ -226,6 +220,56 @@ class Matrix:
             + self.content[2][0] * Matrix.cut(self, 2, 0).det()
             - self.content[3][0] * Matrix.cut(self, 3, 0).det() 
             )
+            
+    # x-0
+    def in_format(self, format):
+        #example format for 3x3 1,0,0,0,x,x,0,x,x
+        split_format = format.split(',')
+        
+        variables = {}
+        
+        for y in range(self.height):
+            for x in range(self.width):
+                index = y * self.width + x
+                try:
+                    if self.content[x][y] != float(split_format[index]): 
+                        print(x, y)
+                        print(split_format[index], self.content[x][y])
+                        self.print()
+                        return False
+                except ValueError:
+                    var = split_format[index][0]
+                    
+                    if var not in variables:
+                        if 'S' in split_format[index][1:]: 
+                            if abs(self.content[x][y]) > 1:
+                                print("yo") 
+                                return False
+                        
+                        if '-' in split_format[index][1:]: 
+                            print("YOOOO")
+                            variables[var] = -self.content[x][y]
+                        else: 
+                            variables[var] = self.content[x][y]
+                            print("yo")
+                    else:
+                        var_value = variables[var]
+                        print(var_value)
+                        print(variables[var])
+                        if '-' in split_format[index][1:]: 
+                            print("WE FLIPPING IT")
+                            var_value = -var_value
+                        if 'S' in split_format[index][1:]: 
+                            if abs(self.content[x][y]) > 1:
+                                print("yo2") 
+                                return False
+                        if var_value != self.content[x][y]: 
+                            print(var_value)
+                            print(self.content[x][y])
+                            return False
+                    
+        return True
+                    
     
     # ROW ECHELON FORM SHIT
     
@@ -251,14 +295,11 @@ class Matrix:
             nonzero_y = ref_mat.find_non_zero_y(x, pivot_y)
             if nonzero_y != None:
                 ref_mat.swap_row(pivot_y, nonzero_y)
-                ref_mat.print()
                 
                 ref_mat.elem_below(x, pivot_y)
-                ref_mat.print()
                 
                 pivot_y += 1
         
-        ref_mat.print()
         return ref_mat
     
     def rank(self): #find the largest matrix with a det of 0
@@ -285,11 +326,8 @@ class Matrix:
         
     @staticmethod
     def multiply_matrice(mat_a: Matrix, mat_b: Matrix): #finds the dot product of 2 matrice
-        mat_a.print()
-        mat_b.print()
         if mat_a.width != mat_b.height: #requirement for matrix multiplication
-            messagebox.showinfo("Invalid Calculation", "Matrix A Must Have The Same Number Of Columns As Matrix B Has Rows.")
-            return Matrix.ERROR_CODE
+            return err.raise_error("E101", "Matrix A Must Have The Same Number Of Columns As Matrix B Has Rows.")
         
         mat_result = Matrix(mat_b.width, mat_a.height)
         
@@ -300,14 +338,12 @@ class Matrix:
                     cell_total += mat_a.content[i][y] * mat_b.content[x][i]
                 mat_result.content[x][y] = cell_total
                 
-        mat_result.print()
         return mat_result
     
     @staticmethod
     def add_sub_matrice(mat_a: Matrix, mat_b: Matrix, subtract = False): #add or sub together the scalar values of two matrix
         if mat_a.width != mat_b.width or mat_a.height != mat_b.height:
-            messagebox.showinfo("Invalid Calculation", "Both Matrice Must Be The Same Size.")
-            return Matrix.ERROR_CODE
+            return err.raise_error("E101", "Both Matrice Must Be The Same Size.")
         
         mat_result = Matrix(mat_a.width, mat_a.height) #same dimensions
         

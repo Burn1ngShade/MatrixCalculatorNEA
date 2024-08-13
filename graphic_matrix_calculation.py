@@ -82,10 +82,14 @@ class Graphic_Matrix_Calculation():
 
     @staticmethod
     def log_gmc(matrice, creation_date=-1, matrix_calculation_id=-1):
+        print(matrice)
+        
         for i in range(len(matrice)): #check for error in calculation 
-                if matrice[i][1] == Matrix.ERROR_CODE: return 
-                if len(matrice[i]) > 2 and Matrix.ERROR_CODE in matrice[i][2]: return
-                matrice[i] = (matrice[i][0], Matrix.copy(matrice[i][1])) if len(matrice[i]) <= 2 else (matrice[i][0], Matrix.copy(matrice[i][1]), matrice[i][2]) 
+                if matrice[i][1] == "E101": return 
+                if len(matrice[i]) > 2 and "E101" in matrice[i][2]: return
+                
+        for i in range(len(matrice)):
+            matrice[i] = (matrice[i][0], Matrix.copy(matrice[i][1])) if len(matrice[i]) <= 2 else (matrice[i][0], Matrix.copy(matrice[i][1]), matrice[i][2]) 
 
         gmc = Graphic_Matrix_Calculation(matrice, creation_date, matrix_calculation_id)
         if Graphic_Matrix_Calculation.sort_method != 0: Graphic_Matrix_Calculation.sort()

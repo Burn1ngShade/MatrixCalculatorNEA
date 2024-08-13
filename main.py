@@ -1,11 +1,11 @@
-# --- RUN ME TO RUN PROJECT ---
-
 import tkinter as tk
 import constants as c
 from graphic_matrix_calculation import Graphic_Matrix_Calculation
 from matrix_window import Matrix_Window
 from login_window import Login_Window
 from visual_window import Visual_Window
+
+# --- RUN ME TO RUN PROJECT ---
 
 class Matrix_Calculator: # primary class handling windows and accounts, aswell as being the root of the whole app 
     def __init__(self, root):
@@ -21,7 +21,7 @@ class Matrix_Calculator: # primary class handling windows and accounts, aswell a
         self.windows[index].panel.tkraise()
         root.geometry(c.WINDOW_GEOMETRY[index])
 
-    # --- ACCOUNT STUFF ---
+    # --- ACCOUNT FUNCTIONS ---
 
     def load_account(self, username): # load account with given username
         self.username = username
@@ -41,7 +41,6 @@ class Matrix_Calculator: # primary class handling windows and accounts, aswell a
 
 root = tk.Tk()
 root.title("Matrix Calculator")
-root.pack_propagate(0)
 root.resizable(False, False)
 root.geometry("800x800") #initally set as this so the window is placed nicely
 root.iconbitmap("Assets/icon.ico")
