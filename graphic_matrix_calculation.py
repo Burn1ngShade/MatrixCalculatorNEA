@@ -3,7 +3,7 @@ import constants as c
 from matrix import Matrix
 from database_connection import Database_Connection
 import time
-import merge_sort
+from data_handler import Data_Handler
 
 class Graphic_Matrix_Calculation():
     target_window = None
@@ -81,9 +81,7 @@ class Graphic_Matrix_Calculation():
     # static methods
 
     @staticmethod
-    def log_gmc(matrice, creation_date=-1, matrix_calculation_id=-1):
-        print(matrice)
-        
+    def log_gmc(matrice, creation_date=-1, matrix_calculation_id=-1):        
         for i in range(len(matrice)): #check for error in calculation 
                 if matrice[i][1] == "E101": return 
                 if len(matrice[i]) > 2 and "E101" in matrice[i][2]: return
@@ -184,11 +182,11 @@ class Graphic_Matrix_Calculation():
         sort_reverse = Graphic_Matrix_Calculation.sort_method % 2
         
         if sort_type == 0:
-            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.creation_date for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+            Graphic_Matrix_Calculation.calculations = Data_Handler.sort([value.creation_date for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
         elif sort_type == 1:
-            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.matrices[0][1].width * value.matrices[0][1].height for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+            Graphic_Matrix_Calculation.calculations = Data_Handler.sort([value.matrices[0][1].width * value.matrices[0][1].height for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
         elif sort_type == 2:
-            Graphic_Matrix_Calculation.calculations = merge_sort.init_merge([value.matrices[-1][1].rank() for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
+            Graphic_Matrix_Calculation.calculations = Data_Handler.sort([value.matrices[-1][1].rank() for value in Graphic_Matrix_Calculation.calculations], Graphic_Matrix_Calculation.calculations)
         
         if sort_reverse == 1: Graphic_Matrix_Calculation.calculations.reverse()
 

@@ -3,16 +3,17 @@ from tkinter import messagebox
 import inspect
 from error_handler import Error_Handler as err
 
-#base class for matrix representation
-class Matrix:    
-    # constructors
-    
+# base class for matrix representation 
+# uses [x][y] representation for matrix rather than standard [y][x] for matrix, as it's what im use to
+class Matrix:        
     def __init__(self, width, height):
         self.width = width
         self.height = height
         self.content = []
         
         self.set(0)
+        
+    # --- CONSTRUCTORS ---
         
     @staticmethod
     def from_list_string(str, width, height):
@@ -57,21 +58,27 @@ class Matrix:
             i_mat.content[i][i] = 1
         return i_mat
     
-    # functions
+    # --- PROPERTYS ---
     
-    def swap_row(self, row_a, row_b):
-        for x in range(self.width):
-            self.content[x][row_a], self.content[x][row_b] = self.content[x][row_b], self.content[x][row_a] 
-    
+    @property
     def is_square(self): # returns if the matrix is square or not
         return self.width == self.height
     
+    @property
     def is_identity(self):
         for y in range(self.height):
             for x in range(self.width):
                 if x == y and self.content[x][y] != 1: return False
                 if x != y and self.content[x][y] != 0: return False
         return True
+    
+    # --- FUNCTIONS ---
+    
+    def swap_row(self, row_a, row_b):
+        for x in range(self.width):
+            self.content[x][row_a], self.content[x][row_b] = self.content[x][row_b], self.content[x][row_a] 
+    
+    
         
     def set_width(self, width): # sets the width of the matrix
         self.width = min(max(width, 1), 4)
@@ -147,7 +154,7 @@ class Matrix:
         return mat_result
     
     def to_pow(self, factor):
-        if not self.is_square(): 
+        if not self.is_square: 
             return err.raise_error("E101", "Only Square Matrice Can Be Raised To A Power.")
     
         if abs(factor) > 10: 
@@ -176,7 +183,7 @@ class Matrix:
         return trn_mat
     
     def invert(self):
-        if not self.is_square():
+        if not self.is_square:
             return err.raise_error("E101", "Only Square Matrice Can Be Inverted.")
         
         det = self.det()
@@ -200,7 +207,7 @@ class Matrix:
             
             
     def det(self): #i think this function counts as recursive?
-        if not self.is_square():
+        if not self.is_square:
             return err.raise_error("E101", "Only Square Matrice Have Determinants.")
         
         if self.width == 1:

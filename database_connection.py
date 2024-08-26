@@ -5,6 +5,12 @@ class Database_Connection: # class for all interaction with the database
     def __init__(self, path = c.DEFAULT_DATABASE_PATH): #init connection to the database
         self.con = sqlite3.connect(path)
         self.cur = self.con.cursor()
+        
+    def close(self, commit = False): # do not use class after closing, commit only needed when modifying database
+        if (commit): self.con.commit()
+        self.con.close()
+        
+    # --- DATABASE INTERACTION ---
  
     def get_record(self, table, column, column_value, all_records=False): # get record(s) from the database
         self.cur.execute(f"SELECT * FROM {table} WHERE {column} == '{column_value}'")
@@ -22,7 +28,3 @@ class Database_Connection: # class for all interaction with the database
     def delete_record(self, table, column, column_value): # delete a record from the database
         self.cur.execute(f"DELETE FROM {table} WHERE {column} = '{column_value}'")
         
-    # DO NOT USE class after calling, commit only needed when making changes to database (insert, update or del)
-    def close(self, commit = False):
-        if (commit): self.con.commit()
-        self.con.close()

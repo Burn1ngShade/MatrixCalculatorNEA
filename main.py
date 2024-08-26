@@ -5,8 +5,6 @@ from matrix_window import Matrix_Window
 from login_window import Login_Window
 from visual_window import Visual_Window
 
-# --- RUN ME TO RUN PROJECT ---
-
 class Matrix_Calculator: # primary class handling windows and accounts, aswell as being the root of the whole app 
     def __init__(self, root):
         root.protocol("WM_DELETE_WINDOW", self.on_close) # extra stuff to do when closing app
@@ -37,12 +35,12 @@ class Matrix_Calculator: # primary class handling windows and accounts, aswell a
         if (self.username != c.GUEST_USERNAME): Graphic_Matrix_Calculation.save_matrix_calculations(self.username)
         self.root.destroy()
 
-# --- PROJECT INIT ---
+# --- PROJECT INITIALISATION ---
 
 root = tk.Tk()
 root.title("Matrix Calculator")
 root.resizable(False, False)
-root.geometry("800x800") #initally set as this so the window is placed nicely
+root.geometry(c.WINDOW_GEOMETRY[1]) #initally set as this so the window is placed nicely
 root.iconbitmap("Assets/icon.ico")
 
 Matrix_Calculator(root) # create instance of the app

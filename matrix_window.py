@@ -4,7 +4,7 @@ import constants as c
 from matrix import Matrix
 from graphic_matrix import Graphic_Matrix
 from graphic_matrix_calculation import Graphic_Matrix_Calculation as GMC
-import entry_validation
+from data_handler import Data_Handler
 
 # main window for matrices
 class Matrix_Window:
@@ -17,8 +17,8 @@ class Matrix_Window:
         self.panel.option_add( "*font", "Consolas 8" )
         self.panel.place(relx=0, rely=0, relwidth=1, relheight=1)
         
-        Matrix_Window.vcmd = app.root.register(entry_validation.validate_input), "%P"
-        Matrix_Window.vcmd_int = app.root.register(entry_validation.validate_int_input), "%P"
+        Matrix_Window.vcmd = app.root.register(Data_Handler.validate_float_input), "%P"
+        Matrix_Window.vcmd_int = app.root.register(Data_Handler.validate_int_input), "%P"
         
         # ui seperators
         

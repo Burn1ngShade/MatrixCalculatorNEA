@@ -1,5 +1,5 @@
 import tkinter as tk
-import entry_validation
+from data_handler import Data_Handler
 import constants as c   
 from matrix import Matrix
 
@@ -8,7 +8,7 @@ class Graphic_Matrix(Matrix):
     def __init__(self, width, height, reflect, panel, master):
         super().__init__(width, height)
         
-        self.vcmd = (master.register(lambda P, W: entry_validation.validate_mat_input(P, W, self)))
+        self.vcmd = (master.register(lambda P, W: Data_Handler.validate_matrix_input(P, W, self)))
         
         self.reflect = reflect
         self.panel = panel

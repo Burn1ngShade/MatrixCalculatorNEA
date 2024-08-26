@@ -21,7 +21,7 @@ class Visual_Window:
         self.panel.place(relx=0, rely=0, relwidth=1, relheight=1)
         
         self.fig = Figure(figsize=(6.7, 6.7), dpi=100)
-        self.fig.patch.set_facecolor("#cdc9c9")
+        self.fig.patch.set_facecolor("#CDC9C9")
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel)
         
         self.bot_info_frame = tk.Frame(self.panel, bg="gainsboro", width=800, height=150)
@@ -233,7 +233,7 @@ class Visual_Window:
         elif mat_dimensions == "1x3":
             return f"Dot Product Of Matrix And Unit Cube"
         elif mat_dimensions == "2x2": #this is the hard one
-            if mat.is_identity(): return f"Identity Matrix (No Effect)"
+            if mat.is_identity: return f"Identity Matrix (No Effect)"
             if abs(mat.content[0][0]) <= 1 and abs(mat.content[0][1]) <= 1 and mat.content[0][0] == mat.content[1][1] and mat.content[0][1] == -mat.content[1][0]:
                 theta_cos = math.acos(mat.content[0][0])
                 theta_sin = math.asin(mat.content[0][1])
@@ -261,7 +261,7 @@ class Visual_Window:
             
             return scale_shear if len(scale_shear) > 0 else "Mix Of Scaling And Shearing (Unidentifiable)"
         elif mat_dimensions == "3x3": #this is the hardddddddddddddddd one
-            if mat.is_identity(): return f"Identity Matrix (No Effect)"
+            if mat.is_identity: return f"Identity Matrix (No Effect)"
             
             # rotation
             

@@ -1,7 +1,6 @@
 from tkinter import messagebox
 
-class Error_Handler:
-    #first number for screen (0 -> login... 9-> debug, next 2 for index)
+class Error_Handler: # responsible for handling errors and relaying them to user
     error_codes = {
         #login
         "E000" : "Invalid Username", 
@@ -18,16 +17,17 @@ class Error_Handler:
         "E901" : "Work In Progress",
     }
     
-    #raises warning message to the user
-    @staticmethod
+    # --- FUNCTIONS ---
+    
+    @staticmethod # checks if text contains an error code
+    def is_error(message):
+        return message in Error_Handler.error_codes
+    
+    @staticmethod # raises warning message to the user
     def raise_error(error_code, message):
         messagebox.showinfo(Error_Handler.error_codes[error_code] + f" [{error_code}]", message)
         return error_code
 
-    @staticmethod
-    def is_error(message):
-        return message in Error_Handler.error_codes
-
-    @staticmethod
+    @staticmethod # raises yes no promt to the user
     def raise_promt(question, message):
         return messagebox.askquestion(question, message) == 'yes'

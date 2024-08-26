@@ -1,5 +1,4 @@
 import tkinter as tk
-import entry_validation as val
 import constants as c
 from database_connection import Database_Connection
 from error_handler import Error_Handler as err
