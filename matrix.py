@@ -155,10 +155,10 @@ class Matrix:
     
     def to_pow(self, factor):
         if not self.is_square: 
-            return err.raise_error("E101", "Only Square Matrice Can Be Raised To A Power.")
+            return err.raise_error_adv("E110")
     
-        if abs(factor) > 10: 
-            return err.raise_error("E101", "Powers Must Range Between -10 and 10.")
+        if abs(factor) > 10:
+            return err.raise_error_adv("E200") 
         
         if factor == 0: return Matrix.identiy(self.width) # A^0 = I (list x^0 = 1)
         
@@ -168,7 +168,7 @@ class Matrix:
             
         if factor < 0:
             mat_result_invert = mat_result.invert()    
-            if mat_result_invert == Matrix.ERROR_CODE: return Matrix.ERROR_CODE
+            if mat_result_invert == False: return False
             mat_result = mat_result_invert
             
         mat_result.print()
@@ -184,11 +184,11 @@ class Matrix:
     
     def invert(self):
         if not self.is_square:
-            return err.raise_error("E101", "Only Square Matrice Can Be Inverted.")
+            return err.raise_error_adv("E111")
         
         det = self.det()
         if det == 0:
-            return err.raise_error("E101", "Matrice With A Determinant Of 0 Can't Be Inverted.")
+            return err.raise_error_adv("E101")
         
         inv_mat = Matrix.copy(self)
         
@@ -208,7 +208,7 @@ class Matrix:
             
     def det(self): #i think this function counts as recursive?
         if not self.is_square:
-            return err.raise_error("E101", "Only Square Matrice Have Determinants.")
+            return err.raise_error_adv("E112")
         
         if self.width == 1:
             return self.content[0][0]
@@ -334,7 +334,7 @@ class Matrix:
     @staticmethod
     def multiply_matrice(mat_a: Matrix, mat_b: Matrix): #finds the dot product of 2 matrice
         if mat_a.width != mat_b.height: #requirement for matrix multiplication
-            return err.raise_error("E101", "Matrix A Must Have The Same Number Of Columns As Matrix B Has Rows.")
+            return err.raise_error_adv("E113")
         
         mat_result = Matrix(mat_b.width, mat_a.height)
         
@@ -350,7 +350,7 @@ class Matrix:
     @staticmethod
     def add_sub_matrice(mat_a: Matrix, mat_b: Matrix, subtract = False): #add or sub together the scalar values of two matrix
         if mat_a.width != mat_b.width or mat_a.height != mat_b.height:
-            return err.raise_error("E101", "Both Matrice Must Be The Same Size.")
+            return err.raise_error("E114", "Subtract" if subtract else "Add")
         
         mat_result = Matrix(mat_a.width, mat_a.height) #same dimensions
         

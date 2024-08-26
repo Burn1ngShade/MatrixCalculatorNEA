@@ -1,3 +1,5 @@
+from error_handler import Error_Handler as err
+
 class Data_Handler:
     # --- INPUT VALIDATION ---
     
@@ -42,6 +44,10 @@ class Data_Handler:
                 return True
             except ValueError:
                 return False
+            
+    def validate_string(message, error_code, min = 5, max = 15):
+        if len(message) < min or len(message) > max: return err.raise_error_adv(error_code)
+        return True
     
     # --- SORTING ---
     

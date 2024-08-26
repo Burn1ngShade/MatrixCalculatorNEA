@@ -59,8 +59,8 @@ class Visual_Window:
         self.matrix_info_label.config(text=f"Matrix Info:\nDimensions - {mat_dimensions}\nRank - {mat.rank()}")
         
         if mat_dimensions not in c.VALID_VISUAL_MATRIX_DIMENSIONS: 
-            return err.raise_error("E200", f"Matrice Of Dimensions {mat.height}x{mat.width} Can Not Be Visualised. (Only Matrix Of 1x1, 2x2, 3x3, 2x1, 1x2, 3x1 and 1x3 Can Be Visualised).")
-        
+            return err.raise_error_adv("E115", [mat.height, mat.width])
+
         self.app.open_window(2)
         
         if mat_dimensions in c.TWO_DIMENSION_MATRIX_TRANSFORMATIONS:

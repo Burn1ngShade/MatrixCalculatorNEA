@@ -105,7 +105,7 @@ class Matrix_Window:
                 
         for i in range(2): # determinant buttons
             tk.Button(self.panel, text = "Determinant", width=17, height=1, command=lambda i=i:
-            (GMC.log_gmc([("Det", self.mat[i], f"= {self.mat[i].det():g}" if self.mat[i].det() != "E101" else "E101")]))).place(
+            (GMC.log_gmc([("Det", self.mat[i], f"= {self.mat[i].det():g}" if not isinstance(self.mat[i].det(), bool) else False)]))).place(
                 x = c.MATRIX_X_BASE - c.MATRIX_OP_X_SPACING + i * c.MATRIX_X_BASE_DIF, y = c.MATRIX_OP_BASE_Y + 66, anchor="center")      
 
             # invert buttons

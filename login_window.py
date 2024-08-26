@@ -2,6 +2,7 @@ import tkinter as tk
 import constants as c
 from database_connection import Database_Connection
 from error_handler import Error_Handler as err
+from data_handler import Data_Handler as data
 
 class Login_Window:
     def __init__(self, app):
@@ -50,20 +51,12 @@ class Login_Window:
             
     # --- LOGIN FUNCTIONS ---
         
-    def validate_username(self, username):
-        if len(username) < 5 or len(username) > 15: return err.raise_error("E000", "Usernames Must Be 5-15 Characters.")
-        return True
-    
-    def validate_password(self, password):
-        if len(password) < 5 or len(password) > 15: return err.raise_error("E001", "Passwords Must Be 5-15 Characters.")
-        return True    
-        
-    def account_create(self, username, password):
+    def account_create(self, username, password): # create new account        
+        if not data.validate_string(username, "E000"): return False
+        if not data.validate_string(password, "E010"): return False
+        if username == c.GUEST_USERNAME: return err.raise_error_adv("E001")
         db_con = Database_Connection()
-        
-        if err.is_error(self.validate_username(username)) or err.is_error(self.validate_password(password)): return False
-        if username == c.GUEST_USERNAME: return err.raise_error("E000", f"Username Can Not Be {c.GUEST_USERNAME}.")
-        if db_con.get_record("Users", "Username", username) != None: return err.raise_error("E000", "Username Is Already Taken.")
+        if db_con.get_record("Users", "Username", username) != None: return err.raise_error_adv("E003")
 
         db_con.insert_record("Users", c.USER_DB_COLUMNS, (username, password))
         db_con.close(True)
@@ -74,16 +67,16 @@ class Login_Window:
         db_con = Database_Connection()
         record = db_con.get_record("Users", "Username", username)
         db_con.close()
-        if record == None: return err.raise_error("E000", f"Account With Username [{username}] Does Not Exist.")
-        if record[2] != password: return err.raise_error("E001", f"Password Is Incorrect.")
+        if record == None: return err.raise_error_adv("E002", username)
+        if record[2] != password: return err.raise_error_adv("E011")
         self.app.load_account(username)
         self.app.open_window(1)
         
     def account_delete(self, username, password):
         db_con = Database_Connection()
         record = db_con.get_record("Users", "Username", username)
-        if record == None: return err.raise_error("E000", f"Account With Username [{username}] Does Not Exist.")
-        if record[2] != password: return err.raise_error("E001", f"Password Is Incorrect.")
+        if record == None: return err.raise_error_adv("E002", username)
+        if record[2] != password: return err.raise_error_adv("E011")
         if err.raise_promt(f"Delete Account [{username}]", f"Are You Sure You Want To Delete This Account? This Action Can Not Be Undone."):
             matrix_calc = db_con.get_record("MatrixCalculations", "UserID", record[0], True)
             for mat in matrix_calc:
