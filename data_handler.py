@@ -44,9 +44,10 @@ class Data_Handler:
                 return True
             except ValueError:
                 return False
-            
-    def validate_string(message, error_code, min = 5, max = 15):
-        if len(message) < min or len(message) > max: return err.raise_error_adv(error_code)
+           
+    @staticmethod 
+    def validate_string_length(message, error_code, min = 5, max = 15): # validate given input is between a min and max length
+        if len(message) <= min or len(message) >= max: return err.raise_error_adv(error_code)
         return True
     
     # --- SORTING ---

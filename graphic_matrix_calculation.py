@@ -5,17 +5,19 @@ from database_connection import Database_Connection
 import time
 from data_handler import Data_Handler
 
-class Graphic_Matrix_Calculation():
-    target_window = None
-    
+class Graphic_Matrix_Calculation():    
     calculations = []
     current_page = 0
     
     database_entrys_to_remove = []
     sort_method = 0
     
+    @staticmethod
+    def init(window):
+        Graphic_Matrix_Calculation.window = window
+        
     def __init__(self, matrices : list, creation_date = -1, matrix_calculation_id = -1):
-        self.panel = Graphic_Matrix_Calculation.target_window.panel
+        self.panel = Graphic_Matrix_Calculation.window.panel
         self.matrices = matrices
         self.graphic = False
         
@@ -57,11 +59,11 @@ class Graphic_Matrix_Calculation():
         
         if f"{self.matrices[-1][1].height}x{self.matrices[-1][1].width}" in c.VALID_VISUAL_MATRIX_DIMENSIONS:
             tk.Button(self.frame, text="Visualise", width= 14, height=1, command=lambda:
-                (self.target_window.app.windows[2].visualise_matrix(self.matrices[-1][1]))).place(x = 662, y=3)
+                (self.window.app.windows[2].visualise_matrix(self.matrices[-1][1]))).place(x = 662, y=3)
         tk.Button(self.frame, text="Insert In A", width=17, height=1, command=lambda:
-        (Graphic_Matrix_Calculation.target_window.mat_a.set_from_mat(self.matrices[-1][1]), Graphic_Matrix_Calculation.target_window.mat_a.draw())).place(x = 662, y=29)
+        (Graphic_Matrix_Calculation.window.mat[0].set_from_mat(self.matrices[-1][1]), Graphic_Matrix_Calculation.window.mat[0].draw())).place(x = 662, y=29)
         tk.Button(self.frame, text="Insert In B", width=17, height=1, command=lambda:
-        (Graphic_Matrix_Calculation.target_window.mat_b.set_from_mat(self.matrices[-1][1]), Graphic_Matrix_Calculation.target_window.mat_b.draw())).place(x = 662, y=55)
+        (Graphic_Matrix_Calculation.window.mat[1].set_from_mat(self.matrices[-1][1]), Graphic_Matrix_Calculation.window.mat[1].draw())).place(x = 662, y=55)
         
     def hide(self):
         for widgets in self.frame.winfo_children():
@@ -108,7 +110,7 @@ class Graphic_Matrix_Calculation():
             else:
                 if (rev_gmc[i].graphic): rev_gmc[i].hide()
                 
-        Graphic_Matrix_Calculation.target_window.prev_trans_text.config(text = 
+        Graphic_Matrix_Calculation.window.prev_trans_text.config(text = 
         f"Previous Matrix Calculations --- Page [{Graphic_Matrix_Calculation.current_page + 1} / {Graphic_Matrix_Calculation.gmc_page_count()}]")
 
     @staticmethod
@@ -169,7 +171,7 @@ class Graphic_Matrix_Calculation():
             
     @staticmethod
     def on_sort_method_select(event, combobox):
-        Graphic_Matrix_Calculation.target_window.panel.focus()
+        Graphic_Matrix_Calculation.window.panel.focus()
         combobox.selection_clear()
         
         method = c.MATRIX_CALC_SORT_OPTIONS.index(combobox.get())
