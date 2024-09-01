@@ -14,11 +14,11 @@ class Graphic_Matrix(Matrix):
         self.panel = panel
         self.content_entry = []
         
-        self.incr_width = tk.Button(self.panel, text="+", width = 1, height = 1, command=lambda: (self.set_width(self.width + 1), self.draw()))
-        self.decr_width = tk.Button(self.panel, text="-", width = 1, height = 1, command=lambda: (self.set_width(self.width - 1), self.draw()))
-        self.incr_height = tk.Button(self.panel, text="+", width = 1, height = 1, command=lambda: (self.set_height(self.height + 1), self.draw()))
-        self.decr_height = tk.Button(self.panel, text="-", width = 1, height = 1, command=lambda: (self.set_height(self.height - 1), self.draw()))
-        self.clear = tk.Button(self.panel, text="c", width = 1, height = 1, command=lambda:(self.set(0, True), self.draw()))
+        self.incr_width = tk.Button(self.panel, text="+", width = 1, height = 1, command=lambda: (self.set_dimensions(self.width + 1, self.height), self.draw()))
+        self.decr_width = tk.Button(self.panel, text="-", width = 1, height = 1, command=lambda: (self.set_dimensions(self.width - 1, self.height), self.draw()))
+        self.incr_height = tk.Button(self.panel, text="+", width = 1, height = 1, command=lambda: (self.set_dimensions(self.width, self.height + 1), self.draw()))
+        self.decr_height = tk.Button(self.panel, text="-", width = 1, height = 1, command=lambda: (self.set_dimensions(self.width, self.height - 1), self.draw()))
+        self.clear = tk.Button(self.panel, text="c", width = 1, height = 1, command=lambda:(self.refresh(True), self.draw()))
         
     def draw(self): #draw matrix to window
         self.undraw()

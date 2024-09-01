@@ -51,7 +51,7 @@ class Visual_Window:
         self.identify_text.place(x=400, y=100, anchor="n")
         
     def visualise_matrix(self, mat : Matrix):
-        mat_dimensions = f"{mat.height}x{mat.width}"
+        mat_dimensions = mat.dimensions
         
         # ui
         self.identify_text.config(text=f"Transformation Details:\n{self.identify_matrix_type(mat)}")
@@ -59,7 +59,7 @@ class Visual_Window:
         self.matrix_info_label.config(text=f"Matrix Info:\nDimensions - {mat_dimensions}\nRank - {mat.rank()}")
         
         if mat_dimensions not in c.VALID_VISUAL_MATRIX_DIMENSIONS: 
-            return err.raise_error_adv("E115", [mat.height, mat.width])
+            return err.raise_error("E115", [mat.height, mat.width])
 
         self.app.open_window(2)
         
@@ -67,7 +67,7 @@ class Visual_Window:
             points = []
             for point in c.UNIT_SQUARE:
                 point_mat = Matrix(1, 2) 
-                point_mat.set_from_values(point)
+                point_mat.set_from_list(point)
             
                 if mat_dimensions == "1x1":
                     point_mat = point_mat.scalar_multiply(mat.content[0][0])
@@ -76,7 +76,7 @@ class Visual_Window:
                     point_mat = Matrix.multiply_matrice(mat, point_mat)
                     points.append((point_mat.content[0][0], 0))
                 elif mat_dimensions == "2x1":
-                    point_mat = Matrix.add_sub_matrice(mat, point_mat)
+                    point_mat = Matrix.add_subtract_matrice(mat, point_mat)
                     points.append((point_mat.content[0][0], point_mat.content[0][1]))
                 elif mat_dimensions == "2x2":
                     point_mat = Matrix.multiply_matrice(mat, point_mat)
@@ -88,13 +88,13 @@ class Visual_Window:
             points = []
             for point in c.UNIT_CUBE:
                 point_mat = Matrix(1, 3)
-                point_mat.set_from_values(point)
+                point_mat.set_from_list(point)
                 
                 if mat_dimensions == "1x3":
                     point_mat = Matrix.multiply_matrice(mat, point_mat)
                     points.append((point_mat.content[0][0], 0, 0))
                 elif mat_dimensions == "3x1":
-                    point_mat = Matrix.add_sub_matrice(mat, point_mat)
+                    point_mat = Matrix.add_subtract_matrice(mat, point_mat)
                     points.append((point_mat.content[0][0], point_mat.content[0][1], point_mat.content[0][2]))
                 elif mat_dimensions == "3x3":
                     point_mat = Matrix.multiply_matrice(mat, point_mat)

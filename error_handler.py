@@ -27,8 +27,8 @@ class Error_Handler: # responsible for handling errors and relaying them to user
     
     @staticmethod # raises error of given code to user, filling in any needed parameters
     def raise_error(error_code, parameters = []):
-        error_title = Error_Handler.error_codes_adv[error_code][0]
-        error_message = Error_Handler.error_codes_adv[error_code][1]
+        error_title = Error_Handler.error_codes[error_code][0]
+        error_message = Error_Handler.error_codes[error_code][1]
         
         if isinstance(parameters, str):
             parameters = [parameters]

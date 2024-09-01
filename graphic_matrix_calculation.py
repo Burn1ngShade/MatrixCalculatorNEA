@@ -139,7 +139,7 @@ class Graphic_Matrix_Calculation():
                 db_con.insert_record("MatrixCalculations", c.MATRIX_CALCULATION_DB_COLUMNS, (user_id, calc.creation_date))
                 id = db_con.get_record("MatrixCalculations", "CreationDate", calc.creation_date)[0]
                 for m in calc.matrices:
-                    db_con.insert_record("MatrixCalculationElements", c.MATRIX_CALCULATION_ELEMENT_DB_COLUMNS, (id, m[0], "" if len(m) < 3 else m[2], m[1].width, m[1].height, m[1].to_list_string()))
+                    db_con.insert_record("MatrixCalculationElements", c.MATRIX_CALCULATION_ELEMENT_DB_COLUMNS, (id, m[0], "" if len(m) < 3 else m[2], m[1].width, m[1].height, m[1].to_database_format()))
                 
         # i belive i dont have to touch records already in the database cause duh
     
@@ -156,7 +156,7 @@ class Graphic_Matrix_Calculation():
             
             matrice = []
             for r in matrice_records:
-                m = Matrix.from_list_string(r[6], r[4], r[5])
+                m = Matrix.from_database_format(r[6], r[4], r[5])
                 if len(r[3]) > 0: matrice.append((r[2], m, r[3]))
                 else: matrice.append((r[2], m))
             

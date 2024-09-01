@@ -1,17 +1,17 @@
 import tkinter as tk
 import constants as c
-from graphic_matrix_calculation import Graphic_Matrix_Calculation as gmc
-from data_handler import Data_Handler as data
 from matrix_window import Matrix_Window
 from login_window import Login_Window
 from visual_window import Visual_Window
+from graphic_matrix_calculation import Graphic_Matrix_Calculation as gmc
+from data_handler import Data_Handler as dh
 
 class Matrix_Calculator: # primary class handling windows and accounts, aswell as being the root of the whole app 
     def __init__(self, root):
         self.root = root
         self.root.protocol("WM_DELETE_WINDOW", self.on_close) # extra stuff to do when closing app
-        Matrix_Calculator.validate_float = self.root.register(data.validate_float_input), "%P" # validate float inputs 
-        Matrix_Calculator.validate_int = self.root.register(data.validate_int_input), "%P" # validate int inputs
+        Matrix_Calculator.validate_float = self.root.register(dh.validate_float_input), "%P" # validate float inputs 
+        Matrix_Calculator.validate_int = self.root.register(dh.validate_int_input), "%P" # validate int inputs
         
         self.windows = [Login_Window(self), Matrix_Window(self), Visual_Window(self)]
         gmc.init(self.windows[1])
