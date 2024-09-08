@@ -1,6 +1,6 @@
 from __future__ import annotations # for type implication for Matrix in Matrix class
-from datetime import datetime
 import inspect
+from datetime import datetime
 from error_handler import Error_Handler as err
 
 # base class for matrix representation 
@@ -52,7 +52,7 @@ class Matrix:
         return self.width == self.height
     
     @property
-    def is_identity(self): # returns if matrix is identity matrix
+    def is_identity(self): # returns if matrix is identity matrix (same as the number 1 in standard numbers)
         for y in range(self.height):
             for x in range(self.width):
                 if x == y and self.content[x][y] != 1: return False
@@ -91,6 +91,12 @@ class Matrix:
         for x in range(self.width):
             for y in range(self.height):
                 self.content[x][y] = list[self.width * y + x]
+                
+    def set_from_mat(self, mat : Matrix):
+        self.set_dimensions(mat.width, mat.height)
+        for y in range(self.width):
+            for x in range(self.height):
+                self.content[x][y] = mat.content[x][y]
                 
     # --- FORMAT FUNCTIONS ---
         

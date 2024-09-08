@@ -5,7 +5,8 @@ from database_connection import Database_Connection
 from error_handler import Error_Handler as err
 from data_handler import Data_Handler as dh
 
-class Login_Window(Window): # window for login and creating accounts
+# window for login and creating accounts
+class Login_Window(Window): 
     def __init__(self, app):
         super().__init__(app)
         

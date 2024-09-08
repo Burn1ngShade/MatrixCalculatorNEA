@@ -1,7 +1,8 @@
 from tkinter import messagebox
 import constants as c
 
-class Error_Handler: # responsible for handling errors and relaying them to user
+# responsible for handling errors and relaying them to user
+class Error_Handler: 
     error_codes = {
         # login errors
         "E000" : ("Invalid Username", "Usernames Must Be 5-15 Characters."),

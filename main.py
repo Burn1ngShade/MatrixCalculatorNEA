@@ -14,9 +14,9 @@ class Matrix_Calculator: # primary class handling windows and accounts, aswell a
         Matrix_Calculator.validate_int = self.root.register(dh.validate_int_input), "%P" # validate int inputs
         
         self.windows = [Login_Window(self), Matrix_Window(self), Visual_Window(self)]
-        gmc.init(self.windows[1])
+        gmc.set_target_window(self.windows[1])
         self.load_account(c.GUEST_USERNAME) 
-        self.open_window(1)
+        self.open_window(0)
         
     def open_window(self, index): # display given index window 
         self.windows[index].panel.tkraise()
@@ -27,11 +27,11 @@ class Matrix_Calculator: # primary class handling windows and accounts, aswell a
     def load_account(self, username): # load account with given username
         self.username = username
         self.windows[1].user_name_label.config(text=f"Logged In As [{username}]")
-        if (self.username != c.GUEST_USERNAME): gmc.load_matrix_calculations(self.username)
+        if (self.username != c.GUEST_USERNAME): gmc.load_account_calculations(self.username)
         
     def log_out(self): # log out of currently logged account
         if (self.username != c.GUEST_USERNAME): gmc.save_matrix_calculations(self.username)
-        gmc.clear_matrix_calculations()
+        gmc.clear_calculation_list()
         self.load_account(c.GUEST_USERNAME)
         
     def on_close(self): # called on application close by (alt f4 or manual close)

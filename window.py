@@ -1,6 +1,7 @@
 import tkinter as tk
 
-class Window(): # base abstract class for windows to inherit from    
+# base abstract class for windows to inherit from 
+class Window():    
     def __init__(self, app, font_size = 12):
         self.app = app
         self.panel = tk.Frame(app.root, bg="snow3")

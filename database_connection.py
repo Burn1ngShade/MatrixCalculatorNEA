@@ -1,7 +1,8 @@
 import sqlite3
 import constants as c
 
-class Database_Connection: # class for all interaction with the database
+# class for all interaction with the database
+class Database_Connection: 
     def __init__(self, path = c.DEFAULT_DATABASE_PATH): #init connection to the database
         self.con = sqlite3.connect(path)
         self.cur = self.con.cursor()
