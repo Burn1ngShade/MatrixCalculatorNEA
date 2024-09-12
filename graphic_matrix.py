@@ -18,9 +18,9 @@ class Graphic_Matrix(Matrix):
     def setup_graphic_matrix(self):
         self.modification_buttons = [
             tk.Button(self.panel, text="+", width=1, height=1, command=lambda: (self.set_dimensions(self.width + 1, self.height), self.draw_to_panel())), # increase width
-            tk.Button(self.panel, text="+", width=1, height=1, command=lambda: (self.set_dimensions(self.width - 1, self.height), self.draw_to_panel())), # decrease width
+            tk.Button(self.panel, text="-", width=1, height=1, command=lambda: (self.set_dimensions(self.width - 1, self.height), self.draw_to_panel())), # decrease width
             tk.Button(self.panel, text="+", width=1, height=1, command=lambda: (self.set_dimensions(self.width, self.height + 1), self.draw_to_panel())), # increase height
-            tk.Button(self.panel, text="+", width=1, height=1, command=lambda: (self.set_dimensions(self.width, self.height - 1), self.draw_to_panel())), # decrease height
+            tk.Button(self.panel, text="-", width=1, height=1, command=lambda: (self.set_dimensions(self.width, self.height - 1), self.draw_to_panel())), # decrease height
             tk.Button(self.panel, text="c", width = 1, height = 1, command=lambda: (self.refresh(True), self.draw_to_panel())) # clear matrix contents
         ]
         
