@@ -47,7 +47,7 @@ class Data_Handler:
            
     @staticmethod 
     def validate_string_length(message, error_code, min = 5, max = 15): # validate given input is between a min and max length
-        if len(message) <= min or len(message) >= max: return err.raise_error_adv(error_code)
+        if len(message) < min or len(message) > max: return err.raise_error(error_code)
         return True
     
     # --- SORTING ---
