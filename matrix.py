@@ -105,7 +105,7 @@ class Matrix:
         
         print("--- Matrix Info Dump ---")
         print(f"Called From Function - {frame_info.f_code.co_name} ({frame_info.f_code.co_filename}) - Line {frame_info.f_lineno}")
-        print(f"Timestamp - [{datetime.now().strftime("%H:%M:%S")}]")
+        print(f"Timestamp - [{datetime.now().strftime('%H:%M:%S')}]")
         print(f"Matrix Content [{self.dimensions}]\n{self.to_string()}\n")
      
     def to_string(self): # convert matrix to string format with even spacing 

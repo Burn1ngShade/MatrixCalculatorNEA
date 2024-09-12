@@ -119,8 +119,9 @@ class Visual_Window(Window):
         self.canvas.get_tk_widget().place(x = -10, y = -20, anchor="nw")
         
         # update ui
-        self.point_text.config(text=
-            f"Orignal Points:\n{'\n'.join(f"({p[0]}, {p[1]})" for p in base_points)}\n\nTransformed Points:\n{'\n'.join(f"({p[0]:g}, {p[1]:g})" for p in trans_points)}")
+        base_point_text = "Orignal Points:\n" + '\n'.join(f"({p[0]}, {p[1]})" for p in base_points) + "\n\n"
+        trans_point_text = "Transformed Points:\n" + '\n'.join(f"({p[0]:g}, {p[1]:g})" for p in trans_points)
+        self.point_text.config(text=base_point_text + trans_point_text)
         
         # convert from lists of points to two seperate lists of floats
         overlap_points = list(set(base_points) & set(trans_points)) # find all overlapping points
@@ -177,8 +178,10 @@ class Visual_Window(Window):
         self.canvas.get_tk_widget().place(x = -50, y = -20, anchor="nw")
         
         # update ui
-        self.point_text.config(text=
-            f"Orignal Points:\n{'\n'.join(f"({p[0]}, {p[1]}, {p[2]})" for p in base_points)}\n\nTransformed Points:\n{'\n'.join(f"({p[0]:g}, {p[1]:g}, {p[2]:g})" for p in trans_points)}")
+        base_point_text = "Orignal Points:\n" + '\n'.join(f"({p[0]}, {p[1]}, {p[2]})" for p in base_points) + "\n\n"
+        trans_point_text = "Transformed Points:\n" + '\n'.join(f"({p[0]:g}, {p[1]:g}, {p[2]:g})" for p in trans_points)
+        self.point_text.config(text=base_point_text + trans_point_text)
+
         
         # convert from lists of points to two seperate lists of floats
         overlap_points = list(set(base_points) & set(trans_points)) # find all overlapping points
