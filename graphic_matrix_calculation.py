@@ -25,7 +25,7 @@ class Graphic_Matrix_Calculation():
         self.currently_rendered = False
         
         # database info
-        self.creation_date = time.time() if creation_date < 0 else creation_date 
+        self.creation_date = round(time.time(), 3) if creation_date < 0 else creation_date 
         self.matrix_calculation_id = matrix_calculation_id # id in the database
 
         Graphic_Matrix_Calculation.calculations.append(self)
@@ -144,12 +144,14 @@ class Graphic_Matrix_Calculation():
             if id == -1: continue
             db_con.delete_record("MatrixCalculations", "MatrixCalculationID", id)
             db_con.delete_record("MatrixCalculationElements", "MatrixCalculationID", id)
-            
+
         Graphic_Matrix_Calculation.deleted_calculations = []
         
         for calc in Graphic_Matrix_Calculation.calculations:
             if calc.matrix_calculation_id == -1: #this is a new calculation
+                print(calc.creation_date)
                 db_con.insert_record("MatrixCalculations", c.MATRIX_CALCULATION_DB_COLUMNS, (user_id, calc.creation_date))
+                print(db_con.get_record("MatrixCalculations", "UserID", 36, True))
                 id = db_con.get_record("MatrixCalculations", "CreationDate", calc.creation_date)[0]
                 for m in calc.calculation_info: # insert information for each individual element in the matrix
                     db_con.insert_record("MatrixCalculationElements", c.MATRIX_CALCULATION_ELEMENT_DB_COLUMNS, (id, m[0], "" if len(m) < 3 else m[2], m[1].width, m[1].height, m[1].to_database_format()))
