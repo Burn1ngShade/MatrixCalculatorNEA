@@ -149,9 +149,7 @@ class Graphic_Matrix_Calculation():
         
         for calc in Graphic_Matrix_Calculation.calculations:
             if calc.matrix_calculation_id == -1: #this is a new calculation
-                print(calc.creation_date)
                 db_con.insert_record("MatrixCalculations", c.MATRIX_CALCULATION_DB_COLUMNS, (user_id, calc.creation_date))
-                print(db_con.get_record("MatrixCalculations", "UserID", 36, True))
                 id = db_con.get_record("MatrixCalculations", "CreationDate", calc.creation_date)[0]
                 for m in calc.calculation_info: # insert information for each individual element in the matrix
                     db_con.insert_record("MatrixCalculationElements", c.MATRIX_CALCULATION_ELEMENT_DB_COLUMNS, (id, m[0], "" if len(m) < 3 else m[2], m[1].width, m[1].height, m[1].to_database_format()))
