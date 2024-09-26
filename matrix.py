@@ -233,15 +233,9 @@ class Matrix:
         if self.width == 1:
             return self.content[0][0]
         
-        if self.width == 2: #2 x 2 matrix
-            return (self.content[0][0] * self.content[1][1]) - (self.content[0][1] * self.content[1][0])
-        
-        det = (self.content[0][0] * Matrix.cut(self, 0, 0).determinant() 
-            - self.content[1][0] * Matrix.cut(self, 1, 0).determinant() 
-            + self.content[2][0] * Matrix.cut(self, 2, 0).determinant())
-        if self.width == 4:
-            det -= self.content[3][0] * Matrix.cut(self, 3, 0).determinant()
-            
+        det = 0
+        for i in range(self.width):
+            det += (-1)**i * self.content[i][0] * Matrix.cut(self, i, 0).determinant()
         return det
     
     def row_echelon_form(self): #convert matrix to row echelon form (special arrangement)
