@@ -235,32 +235,22 @@ class Visual_Window(Window):
         elif mat.dimensions == "2x1":
             return f"Translation Of A 2D Point By Vector ({mat.content[0][0]:g}, {mat.content[0][1]:g})"
         elif mat.dimensions == "1x2":
-            return f"Dot Product Of Matrix And Unit Square"
+            return "Dot Product Of Matrix And Unit Square"
         elif mat.dimensions == "3x1":
             return f"Translation Of A 3D Point By Vector ({mat.content[0][0]:g}, {mat.content[0][1]:g}, {mat.content[0][2]:g})"
         elif mat.dimensions == "1x3":
-            return f"Dot Product Of Matrix And Unit Cube"
+            return "Dot Product Of Matrix And Unit Cube"
         elif mat.dimensions == "2x2":
             if mat.is_identity: return f"Identity Matrix (No Effect)"
             
-            # is the matrix a rotation
             if (mat.in_format("xS,yS-,yS,xS")):
-                theta_cos = math.acos(mat.content[0][0])
-                theta_sin = math.asin(mat.content[0][1])
-                if math.isclose(math.cos(theta_cos), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[0][1], abs_tol=0.001):
-                    return f"Anticlockwise Rotation By {round(math.degrees(theta_cos), 2):g} Degrees"
-                elif math.isclose(math.cos(theta_sin), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[0][1], abs_tol=0.001):
-                    return f"Anticlockwise Rotation By {round(math.degrees(theta_sin), 2):g} Degrees"
-                
-            # is the matrix a reflection
-            if (mat.in_format("xS-,yS,yS,xS")):
-                theta_cos = math.acos(mat.content[0][0])
-                theta_sin = math.asin(mat.content[0][1])
-                print(theta_cos, theta_sin)
-                if math.isclose(math.cos(theta_cos), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[0][1], abs_tol=0.001):
-                    return f"Reflection In The Line y = {round(math.tan(theta_cos / 2), 2):g}x"
-                elif math.isclose(math.cos(theta_sin), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[0][1], abs_tol=0.001):
-                    return f"Reflection In The Line y = {round(math.tan(theta_sin / 2), 2):g}x"
+                correct_angle = self.correct_angle(math.asin(mat.content[0][1]), math.acos(mat.content[0][0]), mat.content[0][1], mat.content[0][0])
+                if (correct_angle[1] != "none"):   
+                    return f"Anticlockwise Rotation By {correct_angle[0]:g} Degrees"
+            elif (mat.in_format("xS-,yS,yS,xS")):
+                correct_angle = self.correct_angle(math.asin(mat.content[0][1]), math.acos(mat.content[0][0]), mat.content[0][1], mat.content[0][0])
+                if (correct_angle[1] != "none"): 
+                    return f"Reflection In The Line y = {round(math.tan(math.radians(correct_angle[0] / 2)), 2):g}x"
             
             # no special case found (covered under a level further math spec), so we can just describe it as a scaling and shearing process
             scale_shear = ""
@@ -275,32 +265,20 @@ class Visual_Window(Window):
         elif mat.dimensions == "3x3":
             if mat.is_identity: return f"Identity Matrix (No Effect)"
             
-            # rotation
-            if mat.in_format("1,0,0,0,xS,yS-,0,yS,xS"): #rotation around x axis
-                theta_cos = math.acos(mat.content[1][1])
-                theta_sin = math.asin(mat.content[1][2])
-                if math.isclose(math.cos(theta_cos), mat.content[1][1], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[1][2], abs_tol=0.001):
-                    return f"Anticlockwise Rotation Through The X Axis By {round(math.degrees(theta_cos), 2):g} Degrees"
-                elif math.isclose(math.cos(theta_sin), mat.content[1][1], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[1][2], abs_tol=0.001):
-                    return f"Anticlockwise Rotation Through The X Axis By {round(math.degrees(theta_sin), 2):g} Degrees"
+            if mat.in_format("1,0,0,0,xS,yS-,0,yS,xS"):
+                correct_angle = self.correct_angle(math.asin(mat.content[1][2]), math.acos(mat.content[1][1]), mat.content[1][2], mat.content[1][1])
+                if correct_angle[1] != "none":
+                    return f"Anticlockwise Rotation Through The X Axis By {correct_angle[0]:g} Degrees"
             
-            if mat.in_format("xS,0,yS,0,1,0,yS-,0,xS"): #rotation around y axis
-                theta_cos = math.acos(mat.content[0][0])
-                theta_sin = math.asin(mat.content[2][0])
-                print("yo")
-                if math.isclose(math.cos(theta_cos), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[2][0], abs_tol=0.001):
-                    return f"Anticlockwise Rotation Through The Y Axis By {round(math.degrees(theta_cos), 2):g} Degrees"
-                elif math.isclose(math.cos(theta_sin), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[2][0], abs_tol=0.001):
-                    return f"Anticlockwise Rotation Through The Y Axis By {round(math.degrees(theta_sin), 2):g} Degrees"
-                
-            if mat.in_format("xS,yS-,0,yS,xS,0,0,0,1"): #rotation around y axis
-                theta_cos = math.acos(mat.content[0][0])
-                theta_sin = math.asin(mat.content[0][1])
-                print("yo")
-                if math.isclose(math.cos(theta_cos), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_cos), mat.content[0][1], abs_tol=0.001):
-                    return f"Anticlockwise Rotation Through The Z Axis By {round(math.degrees(theta_cos), 2):g} Degrees"
-                elif math.isclose(math.cos(theta_sin), mat.content[0][0], abs_tol=0.001) and math.isclose(math.sin(theta_sin), mat.content[0][1], abs_tol=0.001):
-                    return f"Anticlockwise Rotation Through The Z Axis By {round(math.degrees(theta_sin), 2):g} Degrees"
+            if mat.in_format("xS,0,yS,0,1,0,yS-,0,xS"):
+                correct_angle = self.correct_angle(math.asin(mat.content[2][0]), math.acos(mat.content[0][0]), mat.content[2][0], mat.content[0][0])
+                if correct_angle[1] != "none":
+                    return f"Anticlockwise Rotation Through The Y Axis By {correct_angle[0]:g} Degrees"
+            
+            if mat.in_format("xS,yS-,0,yS,xS,0,0,0,1"):
+                correct_angle = self.correct_angle(math.asin(mat.content[0][1]), math.acos(mat.content[0][0]), mat.content[0][1], mat.content[0][0])
+                if correct_angle[1] != "none":
+                    return f"Anticlockwise Rotation Through The Z Axis By {correct_angle[0]:g} Degrees"
             
             # not rotation so a we try describe it as a mix of scaling and shearing
             scale_shear = ""
@@ -311,5 +289,11 @@ class Visual_Window(Window):
                 scale_shear += f"Stretched By Scale Factor ({mat.content[0][0]:g}, {mat.content[1][1]:g}, {mat.content[2][2]:g})"
                 
             return scale_shear
-        
+    
+    def correct_angle(self, theta_sin, theta_cos, sin_value, cos_value):
+        if math.isclose(math.cos(theta_cos), cos_value, abs_tol=0.001) and math.isclose(math.sin(theta_cos), sin_value, abs_tol=0.001):
+            return (round(math.degrees(theta_cos), 2), "cos")
+        if math.isclose(math.cos(theta_sin), cos_value, abs_tol=0.001) and math.isclose(math.sin(theta_sin), sin_value, abs_tol=0.001):
+            return (round(math.degrees(theta_sin), 2), "sin")
+        return (0, "none")
         

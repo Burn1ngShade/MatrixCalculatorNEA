@@ -225,7 +225,6 @@ class Matrix:
         mat.print()
         return mat
             
-            
     def determinant(self): # recursive function to find det
         if not self.is_square:
             return err.raise_error("E112")
@@ -243,9 +242,9 @@ class Matrix:
         pivot_y = 0
         
         for x in range(mat.width):
-            nonzero_y = mat.find_non_zero_cell(x, pivot_y)
-            if nonzero_y != None:
-                mat.swap_rows(pivot_y, nonzero_y)
+            non_zero_y = mat.find_non_zero_cell(x, pivot_y)
+            if non_zero_y != None:
+                mat.swap_rows(pivot_y, non_zero_y)
                 mat.cell_below(x, pivot_y)
                 pivot_y += 1
         mat.print()
