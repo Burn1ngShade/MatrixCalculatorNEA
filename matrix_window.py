@@ -27,7 +27,7 @@ class Matrix_Window(Window):
             (self.app.open_window(0), self.app.log_out())).place(x = 400, y = 260, anchor="center")
         
     def _setup_matrice(self): # create and render matrice
-        self.mat = [Graphic_Matrix(2, 2, 1, self.panel, self.app.root), Graphic_Matrix(2, 2, -1, self.panel, self.app.root)]
+        self.mat = [Graphic_Matrix(2, 2, False, self.panel, self.app.root), Graphic_Matrix(2, 2, True, self.panel, self.app.root)]
         self.mat[0].draw_to_panel()
         self.mat[1].draw_to_panel()
         
