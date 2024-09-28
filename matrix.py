@@ -242,32 +242,32 @@ class Matrix:
         pivot_y = 0
         
         for x in range(mat.width):
-            non_zero_y = mat.find_non_zero_cell(x, pivot_y)
+            non_zero_y = mat.__find_non_zero_cell(x, pivot_y)
             if non_zero_y != None:
                 mat.swap_rows(pivot_y, non_zero_y)
-                mat.cell_below(x, pivot_y)
+                mat.__cell_below(x, pivot_y)
                 pivot_y += 1
         mat.print()
         return mat
-    
-    def find_non_zero_cell(self, x, pivot_y):
-        for y in range(pivot_y, self.height):
-            if self.content[x][y] != 0:
-                return y
-        return None
-    
-    def cell_below(self, x, pivot_y):
-        pivot_element = self.content[x][pivot_y]
-        for y in range(pivot_y + 1, self.height):
-            factor = self.content[x][y] / pivot_element
-            for i in range(self.width):
-                self.content[i][y] -= factor * self.content[i][pivot_y]
     
     def rank(self): #find the largest size matrix with a determiant of 0
         mat = self.row_echelon_form() 
         for y in range(mat.height): # find first 0 column
             if mat.content[mat.width - 1][y] == 0: return y
         return y + 1
+    
+    def __find_non_zero_cell(self, x, pivot_y):
+        for y in range(pivot_y, self.height):
+            if self.content[x][y] != 0:
+                return y
+        return None
+    
+    def __cell_below(self, x, pivot_y):
+        pivot_element = self.content[x][pivot_y]
+        for y in range(pivot_y + 1, self.height):
+            factor = self.content[x][y] / pivot_element
+            for i in range(self.width):
+                self.content[i][y] -= factor * self.content[i][pivot_y]
     
     # --- STATIC TWO MATRIX FUNCTIONS ---
     

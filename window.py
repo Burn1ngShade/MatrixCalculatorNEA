@@ -8,7 +8,7 @@ class Window():
         self.panel.option_add("*font", f"Consolas {font_size}")
         self.panel.place(relx=0, rely=0, relwidth=1, relheight=1)
         
-        self.setup_window()
+        self._setup_window()
     
-    def setup_window(self): pass # called on window creation, to render and setup window 
+    def _setup_window(self): pass # called on window creation, to render and setup window 
         

@@ -12,26 +12,26 @@ class Matrix_Window(Window):
         
     # --- SETUP ---
         
-    def setup_window(self): # initalises and draws window on startup
+    def _setup_window(self): # initalises and draws window on startup
         tk.Frame(self.panel, bg="gainsboro", height=304).pack(side=tk.TOP, fill=tk.X)
 
-        self.setup_transformation_buttons()
-        self.setup_login_buttons()
-        self.setup_previous_calculations()
-        self.setup_matrice()
+        self._setup_transformation_buttons()
+        self._setup_login_buttons()
+        self._setup_previous_calculations()
+        self._setup_matrice()
         
-    def setup_login_buttons(self): # draw login stuff
+    def _setup_login_buttons(self): # draw login stuff
         self.user_name_label = tk.Label(self.panel, text="LOG IN TEST", bg = "gainsboro")
         self.user_name_label.place(x = 400,  y= 235, anchor="center")
         tk.Button(self.panel, text="Log Out", width = 8, height = 1, command=lambda:
             (self.app.open_window(0), self.app.log_out())).place(x = 400, y = 260, anchor="center")
         
-    def setup_matrice(self): # create and render matrice
+    def _setup_matrice(self): # create and render matrice
         self.mat = [Graphic_Matrix(2, 2, 1, self.panel, self.app.root), Graphic_Matrix(2, 2, -1, self.panel, self.app.root)]
         self.mat[0].draw_to_panel()
         self.mat[1].draw_to_panel()
         
-    def setup_transformation_buttons(self): # draw matrix buttons        
+    def _setup_transformation_buttons(self): # draw matrix buttons        
         #double matrice buttons
         tk.Button(self.panel, text="<->", width=7, height=1, command=lambda: #swap matrix button 
             (Matrix.swap_matrice(self.mat[0], self.mat[1]), self.mat[0].draw_to_panel(), self.mat[1].draw_to_panel())).place(
@@ -96,7 +96,7 @@ class Matrix_Window(Window):
              (gmc.log_calculation([("", self.mat[i]), ("~", Matrix.row_echelon_form(self.mat[i]))]))).place(
                 x = c.MATRIX_X_BASE + c.MATRIX_OP_X_SPACING + i * c.MATRIX_X_BASE_DIF, y=c.MATRIX_OP_BASE_Y + 99, anchor="center")
              
-    def setup_previous_calculations(self): # setup previous matrix calculations gui
+    def _setup_previous_calculations(self): # setup previous matrix calculations gui
         # text and page buttons
         self.prev_trans_text = tk.Label(self.panel, font=("Consolas", 12), text="Previous Matrix Calculations --- Page [1 / 1]", bg = "gainsboro")
         self.prev_trans_text.place(x = 10,  y= 326, anchor="w")        

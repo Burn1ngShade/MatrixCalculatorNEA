@@ -55,20 +55,20 @@ class Data_Handler:
     @staticmethod
     def sort(value_array, sort_array): # carrys out merge sort on given values, using associated sort value 
         array = list(zip(value_array, sort_array))
-        Data_Handler.__merge_sort(array, 0, len(array) - 1)
+        Data_Handler._merge_sort(array, 0, len(array) - 1)
         return [value[1] for value in array]
     
     @staticmethod
-    def __merge_sort(array, left, right): # split array into two segements
+    def _merge_sort(array, left, right): # split array into two segements
         if left < right: # if array can still be divided in length
             mid = left+(right-left)//2
             # sort both halfs of array
-            Data_Handler.__merge_sort(array, left, mid)
-            Data_Handler.__merge_sort(array, mid+1, right)
-            Data_Handler.__merge(array, left, mid, right)
+            Data_Handler._merge_sort(array, left, mid)
+            Data_Handler._merge_sort(array, mid+1, right)
+            Data_Handler._merge(array, left, mid, right)
         
     @staticmethod
-    def __merge(array, left, mid, right):
+    def _merge(array, left, mid, right):
         left_array_len = mid - left + 1
         left_array = [0] * (left_array_len)
         for i in range(0, left_array_len):

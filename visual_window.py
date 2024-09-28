@@ -15,22 +15,22 @@ class Visual_Window(Window):
         
     # --- SETUP ---    
         
-    def setup_window(self): # draw and setup all elements in window    
-        self.setup_matplotlib()
-        self.setup_info_buttons()
+    def _setup_window(self): # draw and setup all elements in window    
+        self._setup_matplotlib()
+        self._setup_info_buttons()
         
-    def setup_matplotlib(self): # setup matplotlib and graph
+    def _setup_matplotlib(self): # setup matplotlib and graph
         # set up matplotlibs graphing settings to be the same as ours
         plt.rcParams['font.family'] = 'Consolas'
         plt.rcParams['font.size'] = 12
         plt.rcParams['font.weight'] = 'ultralight'
         
         # set up our graph
-        self.fig = Figure(figsize=(6.7, 6.7), dpi=100)
-        self.fig.patch.set_facecolor("#CDC9C9")
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel)
+        self._fig = Figure(figsize=(6.7, 6.7), dpi=100)
+        self._fig.patch.set_facecolor("#CDC9C9")
+        self._canvas = FigureCanvasTkAgg(self._fig, master=self.panel)
     
-    def setup_info_buttons(self): # setup background and buttons info
+    def _setup_info_buttons(self): # setup background and buttons info
         # frames
         bot_info_frame = tk.Frame(self.panel, bg="gainsboro", width=800, height=150)
         bot_info_frame.place(x=400, y=800, anchor="s")
@@ -38,20 +38,20 @@ class Visual_Window(Window):
         right_info_frame.place(x=800, y=0, anchor="ne")
         
         # buttons
-        self.matrix_label = tk.Label(bot_info_frame, bg="gainsboro", text="Visualising Matrix:")
-        self.matrix_label.place(x=150, y=0, anchor="n")
-        self.matrix_info_label = tk.Label(bot_info_frame, bg="gainsboro", text="Matrix Info:")
-        self.matrix_info_label.place(x = 650, y =0, anchor="n")
-        self.point_text = tk.Label(right_info_frame, bg="gainsboro", anchor="w", justify="left", width=100)
-        self.point_text.place(x = 0, y = 143, anchor="nw")
-        self.identify_text = tk.Label(bot_info_frame, bg="gainsboro", width=100, text="Transformation Details:")
-        self.identify_text.place(x=400, y=100, anchor="n")
+        self._matrix_label = tk.Label(bot_info_frame, bg="gainsboro", text="Visualising Matrix:")
+        self._matrix_label.place(x=150, y=0, anchor="n")
+        self._matrix_info_label = tk.Label(bot_info_frame, bg="gainsboro", text="Matrix Info:")
+        self._matrix_info_label.place(x = 650, y =0, anchor="n")
+        self._point_text = tk.Label(right_info_frame, bg="gainsboro", anchor="w", justify="left", width=100)
+        self._point_text.place(x = 0, y = 143, anchor="nw")
+        self._identify_text = tk.Label(bot_info_frame, bg="gainsboro", width=100, text="Transformation Details:")
+        self._identify_text.place(x=400, y=100, anchor="n")
         tk.Button(bot_info_frame, text="Exit", width=17, height=1, command=lambda:(self.app.open_window(1))).place(x = 400, y = 10, anchor="n")
         
         # legend
-        self.legend_text = tk.Label(right_info_frame, bg="gainsboro", anchor="w", justify="left", width=100)
-        self.legend_text.place(x=0, y=60, anchor="nw")
-        self.legend_text.config(text="  Base Points\n  Transformed Points\n  Overlap") 
+        self._legend_text = tk.Label(right_info_frame, bg="gainsboro", anchor="w", justify="left", width=100)
+        self._legend_text.place(x=0, y=60, anchor="nw")
+        self._legend_text.config(text="  Base Points\n  Transformed Points\n  Overlap") 
         
         legend_canvas = Canvas(right_info_frame, width=15, height=59, bg="gainsboro", highlightbackground="gainsboro")
         legend_canvas.place(x = 0, y = 60, anchor="nw")
@@ -67,9 +67,9 @@ class Visual_Window(Window):
             
         # update information ui
         self.app.open_window(2) # open window
-        self.identify_text.config(text=f"Transformation Details:\n{self.identify_matrix_transformation(mat)}") # type of transformation
-        self.matrix_label.config(text=f"Visualising Matrix:\n{mat.to_string()}") # matrix thats being visualised
-        self.matrix_info_label.config(text=f"Matrix Info:\nDimensions - {mat.dimensions}\nRank - {mat.rank()}") # matrix info
+        self._identify_text.config(text=f"Transformation Details:\n{self.identify_matrix_transformation(mat)}") # type of transformation
+        self._matrix_label.config(text=f"Visualising Matrix:\n{mat.to_string()}") # matrix thats being visualised
+        self._matrix_info_label.config(text=f"Matrix Info:\nDimensions - {mat.dimensions}\nRank - {mat.rank()}") # matrix info
         
         points = []
         if mat.dimensions in c.TWO_DIMENSION_MATRIX_TRANSFORMATIONS: # matrix represents a 2d transformation
@@ -111,17 +111,17 @@ class Visual_Window(Window):
         
     def graph_points_against_unit_square(self, base_points, trans_points): # graph a set of 2d points and the unit square
         # set up graph for 2d rendering
-        self.fig.clear()
-        graph = self.fig.add_subplot(111)
+        self._fig.clear()
+        graph = self._fig.add_subplot(111)
         graph.set_facecolor("#DCDCDC") #set foreground to gainsboro
         graph.grid(True, zorder=0) #gridlines 
         graph.set_title("Effects Of Matrix On The Unit Square")
-        self.canvas.get_tk_widget().place(x = -10, y = -20, anchor="nw")
+        self._canvas.get_tk_widget().place(x = -10, y = -20, anchor="nw")
         
         # update ui
         base_point_text = "Orignal Points:\n" + '\n'.join(f"({p[0]}, {p[1]})" for p in base_points) + "\n\n"
         trans_point_text = "Transformed Points:\n" + '\n'.join(f"({p[0]:g}, {p[1]:g})" for p in trans_points)
-        self.point_text.config(text=base_point_text + trans_point_text)
+        self._point_text.config(text=base_point_text + trans_point_text)
         
         # convert from lists of points to two seperate lists of floats
         overlap_points = list(set(base_points) & set(trans_points)) # find all overlapping points
@@ -166,21 +166,21 @@ class Visual_Window(Window):
         graph.set_xlim(min_limit, max_limit)
         graph.set_ylim(min_limit, max_limit)
         
-        self.canvas.draw() #update canvas with grid
+        self._canvas.draw() #update canvas with grid
 
     def graph_points_against_unit_cube(self, base_points, trans_points): # graph a set of 3d points and the unit cube
         # set up graph for 3d rendering
-        self.fig.clear()
-        graph = self.fig.add_subplot(111, projection="3d")
+        self._fig.clear()
+        graph = self._fig.add_subplot(111, projection="3d")
         graph.set_facecolor("#DCDCDC") #set foreground to gainsboro
         graph.grid(True, zorder=0) #gridlines 
         graph.set_title("Effects Of Matrix On The Unit Cube")
-        self.canvas.get_tk_widget().place(x = -50, y = -20, anchor="nw")
+        self._canvas.get_tk_widget().place(x = -50, y = -20, anchor="nw")
         
         # update ui
         base_point_text = "Orignal Points:\n" + '\n'.join(f"({p[0]}, {p[1]}, {p[2]})" for p in base_points) + "\n\n"
         trans_point_text = "Transformed Points:\n" + '\n'.join(f"({p[0]:g}, {p[1]:g}, {p[2]:g})" for p in trans_points)
-        self.point_text.config(text=base_point_text + trans_point_text)
+        self._point_text.config(text=base_point_text + trans_point_text)
 
         
         # convert from lists of points to two seperate lists of floats
@@ -227,7 +227,7 @@ class Visual_Window(Window):
         graph.set_ylim(min_limit, max_limit)
         graph.set_zlim(min_limit, max_limit)
 
-        self.canvas.draw() #update canvas with grid
+        self._canvas.draw() #update canvas with grid
         
     def identify_matrix_transformation(self, mat : Matrix): # identify the type of transformation a matrix represents
         if mat.dimensions == "1x1":

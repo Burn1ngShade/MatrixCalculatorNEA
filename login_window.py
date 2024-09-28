@@ -12,16 +12,16 @@ class Login_Window(Window):
         
     # --- SETUP ---
            
-    def setup_window(self): # draw all elements in window    
-        self.setup_title()
-        self.setup_login_buttons()
+    def _setup_window(self): # draw all elements in window    
+        self._setup_title()
+        self._setup_login_buttons()
         
-    def setup_title(self): # setup title background and icon
+    def _setup_title(self): # setup title background and icon
         tk.Frame(self.panel, bg="gainsboro", height=230).pack(side=tk.TOP, fill=tk.X)
-        self.title_image = tk.PhotoImage(file="Assets/Title.png") # must be saved to stop garbage collection removing 
-        tk.Label(self.panel, image=self.title_image, bg="gainsboro").place(x = 400, y = 105, anchor="center")
+        self._title_image = tk.PhotoImage(file="Assets/Title.png") # must be saved to stop garbage collection removing 
+        tk.Label(self.panel, image=self._title_image, bg="gainsboro").place(x = 400, y = 105, anchor="center")
     
-    def setup_login_buttons(self): # setup login backgrounds and buttons
+    def _setup_login_buttons(self): # setup login backgrounds and buttons
         # frames
         center_panel = tk.Frame(self.panel, bg="gainsboro", width=220, height=140)
         center_panel.place(x=400, y=335, anchor="center")
@@ -34,19 +34,19 @@ class Login_Window(Window):
         
         # username and password entry
         tk.Label(center_panel, text="Username", bg = "gainsboro").place(x = 110, y = 15, anchor="center")
-        self.login_username = tk.Entry(center_panel, width=18)
-        self.login_username.place(x = 110, y = 40, anchor="center")
+        self._login_username = tk.Entry(center_panel, width=18)
+        self._login_username.place(x = 110, y = 40, anchor="center")
         tk.Label(center_panel, text="Password", bg = "gainsboro").place(x = 110, y = 80, anchor="center")
-        self.login_pswd = tk.Entry(center_panel, width=18)
-        self.login_pswd.place(x = 110, y = 105, anchor="center")
+        self._login_pswd = tk.Entry(center_panel, width=18)
+        self._login_pswd.place(x = 110, y = 105, anchor="center")
         
         # buttons
         tk.Button(left_panel, width=20, height=1, text="Create Account", command=lambda:
-            self.try_create_account(self.login_username.get(), self.login_pswd.get())).place(x = 110, y = 25, anchor="center")
+            self.try_create_account(self._login_username.get(), self._login_pswd.get())).place(x = 110, y = 25, anchor="center")
         tk.Button(left_panel, width=20, height=1, text="Delete Account", command=lambda:
-            self.try_account_delete(self.login_username.get(), self.login_pswd.get())).place(x = 110, y = 75, anchor="center")
+            self.try_account_delete(self._login_username.get(), self._login_pswd.get())).place(x = 110, y = 75, anchor="center")
         tk.Button(right_panel, width=20, height=1, text="Login To Account", command=lambda:
-            self.try_account_login(self.login_username.get(), self.login_pswd.get())).place(x = 110, y = 25, anchor="center")
+            self.try_account_login(self._login_username.get(), self._login_pswd.get())).place(x = 110, y = 25, anchor="center")
         tk.Button(right_panel, width=20, height=1, text=f"Continue As {c.GUEST_USERNAME}", command=lambda:
             self.app.open_window(1)).place(x = 110, y = 75, anchor="center")
         tk.Button(center_bot_panel, width=20, height=1, text="Exit Application",

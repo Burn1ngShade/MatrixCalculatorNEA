@@ -3,7 +3,7 @@ import constants as c
 
 # responsible for handling errors and relaying them to user
 class Error_Handler: 
-    error_codes = {
+    _error_codes = {
         # login errors
         "E000" : ("Invalid Username", "Usernames Must Be 5-15 Characters."),
         "E001" : ("Invalid Username", f"Username Can Not Be {c.GUEST_USERNAME}."),
@@ -28,8 +28,8 @@ class Error_Handler:
     
     @staticmethod # raises error of given code to user, filling in any needed parameters
     def raise_error(error_code, parameters = []):
-        error_title = Error_Handler.error_codes[error_code][0]
-        error_message = Error_Handler.error_codes[error_code][1]
+        error_title = Error_Handler._error_codes[error_code][0]
+        error_message = Error_Handler._error_codes[error_code][1]
         
         if isinstance(parameters, str):
             parameters = [parameters]

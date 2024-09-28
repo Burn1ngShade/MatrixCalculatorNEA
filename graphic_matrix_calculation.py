@@ -20,7 +20,7 @@ class Graphic_Matrix_Calculation():
         
     def __init__(self, calculation_info : list, creation_date = -1, matrix_calculation_id = -1):
         # calculation info
-        self.panel = Graphic_Matrix_Calculation.window.panel
+        self._panel = Graphic_Matrix_Calculation.window.panel
         self.calculation_info = calculation_info
         self.currently_rendered = False
         
@@ -35,47 +35,47 @@ class Graphic_Matrix_Calculation():
     def draw_to_panel(self, y = c.MATRIX_CALC_BASE_Y): # creates graphic for the calculation
         self.currently_rendered = True
         
-        self.frame = tk.Frame(self.panel, bg="gainsboro", width = 780, height = 81)
-        self.frame.option_add( "*font", "Consolas 8" )
-        self.frame.place(x = 10, y = y, anchor="w")
+        self._frame = tk.Frame(self._panel, bg="gainsboro", width = 780, height = 81)
+        self._frame.option_add( "*font", "Consolas 8" )
+        self._frame.place(x = 10, y = y, anchor="w")
         
         # calculation visualse representation
         x_offset = 10
         for mat in self.calculation_info:
             if len(mat[0]) > 0: # if we have prefix text e.g. det [MATRIX]
-                tk.Label(self.frame, bg="gainsboro", font=("Consolas", 12), text=mat[0]).place(x=x_offset, y=42, anchor="w")
+                tk.Label(self._frame, bg="gainsboro", font=("Consolas", 12), text=mat[0]).place(x=x_offset, y=42, anchor="w")
                 x_offset += len(mat[0]) * 9 + 5
                 
             # visualise actual matrix
             mat_text = mat[1].to_string()
-            tk.Label(self.frame, bg="gainsboro", font=("Consolas", 12), text=f"{mat_text}").place(x=x_offset, y=42, anchor="w")
+            tk.Label(self._frame, bg="gainsboro", font=("Consolas", 12), text=f"{mat_text}").place(x=x_offset, y=42, anchor="w")
             x_offset += (len(mat_text[:mat_text.find('\n')]) * 9) if '\n' in mat_text else len(mat_text) * 9
             x_offset += 5
             
             if len(mat) > 2 and len(mat[2]) > 0: # if we have suffix text e.g. [MATRIX] = 2
-                tk.Label(self.frame, bg="gainsboro", font=("Consolas", 12), text=mat[2]).place(x=x_offset, y=42, anchor="w")
+                tk.Label(self._frame, bg="gainsboro", font=("Consolas", 12), text=mat[2]).place(x=x_offset, y=42, anchor="w")
                 x_offset += len(mat[0]) * 9 + 5
                 
         #buttons
-        tk.Button(self.frame, text="X", width=1, height=1, command=lambda: # delete from history button
+        tk.Button(self._frame, text="X", width=1, height=1, command=lambda: # delete from history button
         (self.hard_destroy(), Graphic_Matrix_Calculation.deleted_calculations.append(self.matrix_calculation_id))).place(
         x=758, y=3)
         
         if len(self.calculation_info) <= 1: return # calculation does not result in a matrix result so we can return
         
         if self.calculation_info[-1][1].dimensions in c.VALID_VISUAL_MATRIX_DIMENSIONS: # if can be visualised
-            tk.Button(self.frame, text="Visualise", width= 14, height=1, command=lambda:
+            tk.Button(self._frame, text="Visualise", width= 14, height=1, command=lambda:
                 (self.window.app.windows[2].visualise_matrix_transformation(self.calculation_info[-1][1]))).place(x = 662, y=3)
             
-        tk.Button(self.frame, text="Insert In A", width=17, height=1, command=lambda:
+        tk.Button(self._frame, text="Insert In A", width=17, height=1, command=lambda:
             (Graphic_Matrix_Calculation.window.mat[0].set_from_mat(self.calculation_info[-1][1]), Graphic_Matrix_Calculation.window.mat[0].draw_to_panel())).place(x = 662, y=29)
-        tk.Button(self.frame, text="Insert In B", width=17, height=1, command=lambda:
+        tk.Button(self._frame, text="Insert In B", width=17, height=1, command=lambda:
             (Graphic_Matrix_Calculation.window.mat[1].set_from_mat(self.calculation_info[-1][1]), Graphic_Matrix_Calculation.window.mat[1].draw_to_panel())).place(x = 662, y=55)
         
     def soft_destroy(self): # destroys the graphics from the panel while keeping the data within the calculations array
-        for widgets in self.frame.winfo_children():
+        for widgets in self._frame.winfo_children():
             widgets.destroy()
-        self.frame.destroy()
+        self._frame.destroy()
         self.currently_rendered = False
 
         Graphic_Matrix_Calculation.update_calculation_list()
@@ -85,7 +85,7 @@ class Graphic_Matrix_Calculation():
         if self.currently_rendered: self.soft_destroy()
 
     def set_panel_position(self, y): # move graphic to given panel position
-        self.frame.place(x = 10, y = y)
+        self._frame.place(x = 10, y = y)
 
     # --- CALCULATION LIST AND DATABASE HANDLING
 
