@@ -20,7 +20,6 @@ class Graphic_Matrix_Calculation():
         
     def __init__(self, calculation_info : list, creation_date = -1, matrix_calculation_id = -1):
         # calculation info
-        self._panel = Graphic_Matrix_Calculation.window.panel
         self.calculation_info = calculation_info
         self.currently_rendered = False
         
@@ -35,7 +34,7 @@ class Graphic_Matrix_Calculation():
     def draw_to_panel(self, y = c.MATRIX_CALC_BASE_Y): # creates graphic for the calculation
         self.currently_rendered = True
         
-        self._frame = tk.Frame(self._panel, bg="gainsboro", width = 780, height = 81)
+        self._frame = tk.Frame(Graphic_Matrix_Calculation.window.panel, bg="gainsboro", width = 780, height = 81)
         self._frame.option_add( "*font", "Consolas 8" )
         self._frame.place(x = 10, y = y, anchor="w")
         
