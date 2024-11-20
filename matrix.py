@@ -157,7 +157,7 @@ class Matrix:
                     var = split_format[index][0] # first index always the variable
                     if var not in variables: # we havent come across this variable yet
                         variables[var] = -self.content[x][y] if '-' in split_format[index][1:] else self.content[x][y]
-                    elif -variables[var] if '-' in split_format[index][1:] else variables[var] != self.content[x][y]:
+                    elif (-variables[var] if '-' in split_format[index][1:] else variables[var]) != self.content[x][y]:
                         return False    
         return True
 
