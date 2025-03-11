@@ -94,8 +94,8 @@ class Matrix:
                 
     def set_from_mat(self, mat : Matrix):
         self.set_dimensions(mat.width, mat.height)
-        for y in range(self.width):
-            for x in range(self.height):
+        for x in range(self.width):
+            for y in range(self.height):
                 self.content[x][y] = mat.content[x][y]
                 
     # --- FORMAT FUNCTIONS ---
